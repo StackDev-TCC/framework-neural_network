@@ -12,7 +12,7 @@ tro Universitário Fundação Santo André. </p>
 )
 
 <h4 align="center"> 
-	🚧  Status do Projeto 🚀 Em construção...  🚧
+	🚧  Status do Projeto 🚧 Em construção...  🚧
 </h4>
 
 
