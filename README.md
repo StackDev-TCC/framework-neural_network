@@ -31,6 +31,7 @@ Tabela de conteúdos
       * [Combo](#combo)
    * [Tests](#testes)
    * [Tecnologias](#tecnologias)
+   * [Autores](#autores)
 <!--te-->
 
 ### Features
