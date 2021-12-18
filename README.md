@@ -10,3 +10,73 @@ tro Universitário Fundação Santo André. </p>
 ![Badge](https://img.shields.io/github/license/StackDev-TCC/framework-neural_network)
 ![Badge](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FStackDev-TCC%2Fframework-neural_network
 )
+
+<h4 align="center"> 
+	🚧  Status do Projeto 🚀 Em construção...  🚧
+</h4>
+
+
+
+Tabela de conteúdos
+=================
+<!--ts-->
+   * [Sobre](#Sobre)
+   * [Tabela de Conteudo](#tabela-de-conteudo)
+   * [Instalação](#instalacao)
+   * [Como usar](#como-usar)
+      * [Pre Requisitos](#pre-requisitos)
+      * [Local files](#local-files)
+      * [Remote files](#remote-files)
+      * [Multiple files](#multiple-files)
+      * [Combo](#combo)
+   * [Tests](#testes)
+   * [Tecnologias](#tecnologias)
+<!--te-->
+
+### Features
+
+- [x] Cria e manipula redes neurais
+- [x] Treinamento
+- [ ] Utilização de tensores
+
+### Pré-requisitos
+
+
+Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
+
+### 🎲 Rodando o Back End (servidor)
+
+```bash
+# Clone este repositório
+$ git clone <https://github.com/tgmarinho/nlw1>
+
+# Acesse a pasta do projeto no terminal/cmd
+$ cd nlw1
+
+# Vá para a pasta server
+$ cd server
+
+# Instale as dependências
+$ npm install
+
+# Execute a aplicação em modo de desenvolvimento
+$ npm run dev:server
+
+# O servidor inciará na porta:3333 - acesse <http://localhost:3333>
+```
+
+### 🛠 Tecnologias
+
+As seguintes ferramentas foram usadas na construção do projeto:
+
+- [Java](https://www.java.com/)
+- [HTML](https://)
+- [CSS](https://)
+
+### Autores
+---
+
+Fabio Mendes Pio D'Anunzio
+Jean Paulo Rodrigues Santos
+Mauricio Yuji Nakandakari
+Luís Emílio Cavechiolli Dalla Valle
