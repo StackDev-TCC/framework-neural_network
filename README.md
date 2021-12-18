@@ -77,7 +77,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 ### Autores
 ---
 
-Fabio Mendes Pio D'Anunzio
-Jean Paulo Rodrigues Santos
-Mauricio Yuji Nakandakari
-Luís Emílio Cavechiolli Dalla Valle
+# Fabio Mendes Pio D'Anunzio
+# Jean Paulo Rodrigues Santos
+# Mauricio Yuji Nakandakari
+# Luís Emílio Cavechiolli Dalla Valle
