@@ -6,8 +6,7 @@
 <h1 align="center">FRAMEWORK PARA REDES NEURAIS ARTIFICIAIS</h1>
 
 <p align="center">Este projeto é um Trabalho de conclusão de curso em Engenharia de
-Computação, à Faculdade FAENG do Cen-
-tro Universitário Fundação Santo André. </p>
+Computação, à Faculdade FAENG do Centro Universitário Fundação Santo André. </p>
 
 
 
