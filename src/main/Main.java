@@ -9,9 +9,7 @@ import report.PlotGraphics;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-//Comentario do Mauricio (Push)
-//Comentario do Jean (Push)
-//Comentário do Luis (Estagiário)
+
 //        PlotGraphics pg = new PlotGraphics();
 //
 //        NeuralNetwork nn = new NeuralNetwork();
