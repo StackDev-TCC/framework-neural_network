@@ -8,8 +8,7 @@ import report.Report;
  * <p> Realiza o treinamento ao percorrer todas as estruturas presentes na {@link NeuralNetwork}.</p>
  *
  * <p> O treinamento se dá de forma customizada ao construir uma subclasse para esta {@code TrainingNetwork},
- *  e sobrescrever os métodos {}{@link #startTraining()}, {@link #feedForward()} e {@link #backPropagation()}.</p>
- *
+ *  e sobrescrever os métodos {}{@link #startTraining()}.</p>
  */
 public abstract class TrainingNetwork {
 
@@ -17,6 +16,8 @@ public abstract class TrainingNetwork {
     private TrainingStrategy trainingStrategies;
     private NeuralNetwork neuralNetwork;
     private InputSamples inputSamples;
+    private int epoch;
+    private int samplesPerEpoch;
     private Report report;
 
     /**
@@ -79,8 +80,6 @@ public abstract class TrainingNetwork {
     public void setTrainingStrategies(TrainingStrategy trainingStrategy) {
         this.trainingStrategies = trainingStrategies;
     }
-
-
 
     public Report getReport(){
         return report;

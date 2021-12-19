@@ -1,9 +1,10 @@
 package report;
 
 
-import utils.PixelCalc;
+import Utils.PixelCalc;
 import operations.TrainingNetwork;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -136,12 +137,12 @@ public class PlotGraphics {
      * Construtor de {@code PlotGraphics} com todos os parâmetros necessários para a plotagem de um gráfico.
      * <p>Uma atenção especial ao parâmetro {@code margin}, pois este será usado como uma escala de porcentagem
      * da imagem (de 0 a 100%) para o cálculo da margem de plotagem. Uma margin de 100 plota o gráfico utilizando
-     * toda a área da imagem, sem bordas. Valores menores vão criando bordas. O ideal para a maioria dos casos são
+     * toda a área da imagem, sem bordas. Valores menores vão criar bordas maiores. O ideal para a maioria dos casos são
      * valores acima de 85%</p>
      *
      * @param w A largura da Imagem geradora do gráfico.
      * @param h A altura da Imagem geradora do gráfico.
-     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico
+     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico.
      * @param xLabel O rótulo do eixo X.
      * @param yLabel O rótulo do eixo Y.
      * @param title O titulo do gráfico.
@@ -282,6 +283,16 @@ public class PlotGraphics {
             return new Universe(xmin, xmax, ymin, ymax);
         }
         return null;
+    }
+
+    public static void main(String[] args){
+        double[] data = new double[]{400, 401, 398, 396, 394, 380, 370, 340, 345, 340, 320, 305, 250, 140, 100, 98, 95,
+        94, 92, 90, 89, 87, 84, 81, 70, 59, 57, 55, 55, 53, 51, 50, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
+        27, 26, 25, 24, 23, 22, 21, 20, 18, 16, 14, 10, 9, 8, 7,6, 5, 4, 3, 2, 1, 0, 0, 0, 0};
+        PlotGraphics pg = new PlotGraphics(800,600,90,"eixoX", "eixoY","Gráfico", data);
+        pg.plot();
+        JFrame f = new JFrame("Graphic");
+
     }
 
     /**

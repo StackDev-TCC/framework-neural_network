@@ -4,27 +4,30 @@ import activationfunctions.Sigmoid;
 import activationfunctions.Step;
 import kernel.*;
 import network.mnist.*;
+import report.PlotGraphics;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        NeuralNetwork nn = new NeuralNetwork();
-        Layer l1 = new Layer(10);
-        Layer l2 = new Layer(10);
-        l1.setActivationFunction(new Sigmoid());
-        l2.setActivationFunction(new Step());
-        nn.addLayer(l1);
-        nn.addLayer(l2);
-        Mnist mnist = new Mnist();
-        MNISTInputSamples mnistInputSamples = new MNISTInputSamples(mnist.getAllMnistData());
-        mnistInputSamples.getSample(0);
-        nn.attachInput(mnistInputSamples.getInput());
-        MNISTOutput mnistOutput = new MNISTOutput();
-        nn.attachOutput(mnistOutput);
-
-        nn.training();
-        System.out.println(nn.showInfo(false));
+//        PlotGraphics pg = new PlotGraphics();
+//
+//        NeuralNetwork nn = new NeuralNetwork();
+//        Layer l1 = new Layer(10);
+//        Layer l2 = new Layer(10);
+//        l1.setActivationFunction(new Sigmoid());
+//        l2.setActivationFunction(new Step());
+//        nn.addLayer(l1);
+//        nn.addLayer(l2);
+//        Mnist mnist = new Mnist();
+//        MNISTInputSamples mnistInputSamples = new MNISTInputSamples(mnist.getAllMnistData());
+//        mnistInputSamples.getSample(0);
+//        nn.attachInput(mnistInputSamples.getInput());
+//        MNISTOutput mnistOutput = new MNISTOutput();
+//        nn.attachOutput(mnistOutput);
+//
+//        nn.training();
+//        System.out.println(nn.showInfo(false));
 
 
 
