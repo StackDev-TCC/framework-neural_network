@@ -44,7 +44,7 @@ Tabela de conteúdos
 
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
-### Rodando o .JAR
+### Rodando o JAR
 
 ```bash
 # Clone este repositório
@@ -74,7 +74,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [CSS](https://)
 
 ### Autores
----
 
 - Fabio Mendes Pio D'Anunzio
 - Jean Paulo Rodrigues Santos
