@@ -9,16 +9,16 @@ import report.PlotGraphics;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
-        PlotGraphics pg = new PlotGraphics();
-
-        NeuralNetwork nn = new NeuralNetwork();
-        Layer l1 = new Layer(10);
-        Layer l2 = new Layer(10);
-        l1.setActivationFunction(new Sigmoid());
-        l2.setActivationFunction(new Step());
-        nn.addLayer(l1);
-        nn.addLayer(l2);
+//Comentario do Mauricio (Push)
+//        PlotGraphics pg = new PlotGraphics();
+//
+//        NeuralNetwork nn = new NeuralNetwork();
+//        Layer l1 = new Layer(10);
+//        Layer l2 = new Layer(10);
+//        l1.setActivationFunction(new Sigmoid());
+//        l2.setActivationFunction(new Step());
+//        nn.addLayer(l1);
+//        nn.addLayer(l2);
 //        Mnist mnist = new Mnist();
 //        MNISTInputSamples mnistInputSamples = new MNISTInputSamples(mnist.getAllMnistData());
 //        mnistInputSamples.getSample(0);
