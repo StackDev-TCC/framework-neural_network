@@ -6,8 +6,7 @@
 <h1 align="center">FRAMEWORK PARA REDES NEURAIS ARTIFICIAIS</h1>
 
 <p align="center">Este projeto é um Trabalho de conclusão de curso em Engenharia de
-Computação, à Faculdade FAENG do Cen-
-tro Universitário Fundação Santo André. </p>
+Computação, à Faculdade FAENG do Centro Universitário Fundação Santo André. </p>
 
 
 
@@ -45,7 +44,7 @@ Tabela de conteúdos
 
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
-### Rodando o .JAR
+### Rodando o JAR
 
 ```bash
 # Clone este repositório
@@ -75,7 +74,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [CSS](https://)
 
 ### Autores
----
 
 - Fabio Mendes Pio D'Anunzio
 - Jean Paulo Rodrigues Santos
