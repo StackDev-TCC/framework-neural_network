@@ -19,7 +19,7 @@ public abstract class TrainingNetwork {
     private int epoch;
     private int samplesPerEpoch;
     private Report report;
-    private int percentage;
+
 
     /**
      * Instancia do treinamento recebendo a rede neural
