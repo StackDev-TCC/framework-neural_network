@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-//        PlotGraphics pg = new PlotGraphics();
+        PlotGraphics pg = new PlotGraphics();
 //
 //        NeuralNetwork nn = new NeuralNetwork();
 //        Layer l1 = new Layer(10);
