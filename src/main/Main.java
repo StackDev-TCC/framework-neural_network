@@ -10,6 +10,8 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 //Comentario do Mauricio (Push)
+//Comentario do Jean (Push)
+
 //        PlotGraphics pg = new PlotGraphics();
 //
 //        NeuralNetwork nn = new NeuralNetwork();
@@ -28,8 +30,6 @@ public class Main {
 //
 //        nn.training();
 //        System.out.println(nn.showInfo(false));
-
-
 
 //        int[] arr = new int[]{70, 80, 65, 50, 3, 25, 23, 22, 21, 20, 19, 15, 14, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 //        String report = Report.generate(nn.showInfo(true), arr);
