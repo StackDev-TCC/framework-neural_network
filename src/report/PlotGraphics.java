@@ -4,9 +4,12 @@ package report;
 import Utils.PixelCalc;
 import operations.TrainingNetwork;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Classe responsável por plotar os gráficos gerados através dos dados coletados por
@@ -31,107 +34,6 @@ public class PlotGraphics {
     private String yLabel;
     private String title;
     private float margin;
-//
-//    /**
-//     * Ponto x0 da imagem
-//     */
-//    private double x0;
-//    /**
-//     * Ponto y0 da imagem
-//     */
-//    private double y0;
-//    /**
-//     * Ponto x1 da imagem
-//     */
-//    private double x1;
-//    /**
-//     * Ponto y1 da imagem
-//     */
-//    private double y1;
-//
-//    /**
-//     * Valor de referência para o mapeamento no eixo x
-//     */
-//    private double x;
-//    /**
-//     * Valor de origem inicial X
-//     */
-//    private double oix;
-//    /**
-//     * Valor da origem final X
-//     */
-//    private double ofx;
-//    /**
-//     * Valor do destino inicial X
-//     */
-//    private double dix;
-//    /**
-//     * Valor do destino final X
-//     */
-//    private double dfx;
-//    /**
-//     * Ponto em x a ser mapeado
-//     */
-//    private double pxr;
-//
-//    /**
-//     * Valor de referência para o mapeamento no eixo Y
-//     */
-//    private double y;
-//    /**
-//     *  Valor da origem inicial em Y
-//     */
-//    private double oiy;
-//    /**
-//     * Valor da origem final em Y
-//     */
-//    private double ofy;
-//    /**
-//     * Valor do destino inicial em Y
-//     */
-//    private double diy;
-//    /**
-//     * Valor do destino final em Y
-//     */
-//    private double dfy;
-//    /**
-//     * Valor a ser mapeado em Y
-//     */
-//    private double pyr;
-//
-//    /**
-//     * Ineiro para eixo X
-//     */
-//    int eixoX;
-//    /**
-//     * Inteiro para eixo Y
-//     */
-//    int eixoY;
-//
-//
-//    double w = 1;
-//
-//    /**
-//     * Rótulo em {@code String} para o eixo Y
-//     */
-//    String yLabel;
-//    /**
-//     * Coordenada vertical para o {@code yLabel}
-//     */
-//    int z = 1;
-//
-//    /**
-//     * Valor d
-//     */
-//    double porcentagem;
-//
-//
-//    PixelCalc pixelcalc;
-//
-//    List<Double> auxList;
-//    List<Point> pontos;
-//
-//
 
     /**
      * Construtor de {@code PlotGraphics} com todos os parâmetros necessários para a plotagem de um gráfico.
@@ -242,27 +144,55 @@ public class PlotGraphics {
     private void drawBackground(int border, Graphics2D render){
         render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         render.setColor(Color.lightGray);
-        render.fillRect(border, border, w-border, h-border);
+        render.fillRect(border, border, w-2*border, h-2*border);
     }
 
     private void drawGrid(int border, Graphics2D render){
-    //TODO drawgrid()
+
+        Stroke oldStroke = render.getStroke();
+        float[] dash = {2f, 0f, 2f};
+        BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
+        render.setStroke(bs);
+
+        int lineSpace = Math.round(Math.max(w , h) - border * 0.1f);
+
+        for (int i = 0; i < data.length; i++){
+            render.setColor(Color.darkGray);
+            render.drawLine(u.mapX(i), u.pyend, u.mapX(i), u.pyini);
+            render.drawLine(u.pxini, u.mapY(data[i]), u.pxend, u.mapY(data[i]));
+        }
+        render.setStroke(oldStroke);
     }
 
     private void drawTitle(int border, Graphics2D render){
         render.setColor(Color.BLACK);
-        render.drawString(title, w/2 - (render.getFontMetrics().stringWidth(title)/2) ,  calculateBorder()+20);
+        render.drawString(title, w/2 - (render.getFontMetrics().stringWidth(title)/2) ,  calculateBorder()-20);
     }
 
     private void drawAxis(int border, Graphics2D render){
 
         render.setColor(Color.BLACK);
-        render.drawLine(border, h-border, w-border, h-border); // eixo x
-        render.drawLine(border, h-border, border, border); // eixo Y
+        render.drawLine(border-Math.round(0.25f*border), h-border, w-border, h-border); // eixo x
+        render.drawLine(border, h-border+Math.round(0.25f*border), border, border); // eixo Y
     }
 
     private void plotData(int border, Graphics2D render){
-    //TODO plotData()
+
+        int bulletDiameter = Math.round(Math.max(w , h) * 0.01f);
+        int prevX = u.mapX(0);
+        int prevY = u.mapY(data[0]);
+
+        for (int i = 1; i < data.length; i++){
+            int x = u.mapX(i);
+            int y = u.mapY(data[i]);
+
+            render.setColor(Color.BLUE);
+            render.drawLine(prevX,prevY,x,y);
+            render.setColor(Color.RED);
+            render.fillOval(x - bulletDiameter/2,  y - bulletDiameter/2, bulletDiameter, bulletDiameter);
+            prevX = x;
+            prevY = y;
+        }
     }
 
     /**
@@ -280,7 +210,7 @@ public class PlotGraphics {
             double xmax = data.length-1;
             double ymin = getMinValue();
             double ymax = getMaxValue();
-            return new Universe(xmin, xmax, ymin, ymax);
+            return new Universe(xmin, xmax, ymin, ymax, this);
         }
         return null;
     }
@@ -292,6 +222,13 @@ public class PlotGraphics {
         PlotGraphics pg = new PlotGraphics(800,600,90,"eixoX", "eixoY","Gráfico", data);
         pg.plot();
         JFrame f = new JFrame("Graphic");
+        f.setBounds(10,10,pg.getW()+4,pg.getH()+15);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel l = new JLabel();
+        l.setIcon(new ImageIcon(pg.getPlot()));
+        f.add(l);
+        f.setVisible(true);
+        pg.saveImage("test");
 
     }
 
@@ -426,103 +363,7 @@ public class PlotGraphics {
 
 
 
-//    public void criaLinhasPontos() {
-//        pontos = new ArrayList<>();
-////        valoresSaida();
-//        System.out.println(valoresSaida());
 //
-//        porcentagem = 0.1;
-//
-//        oix = 0;
-//        ofx = auxList.size();
-//        dix = (int) (x0 + margem() + 1);
-//        dfx = x1;
-//
-//        oiy = getMaxValue();
-//        ofy = getMinValue();
-//        diy = y0;
-//        dfy = (int) (y1 - margem());
-//
-//        for (int i = 0; i < auxList.size(); i++) {
-//            x = i;
-//            mapeamentoX();
-//
-//            // System.out.println(Prx);
-//            for (int j = 0; j < auxList.size(); j++) {
-//                y = auxList.get(i);
-//                mapeamentoY();
-//                pontos.add(new Point((int) pxr, (int) pyr));
-//            }
-//        }
-//
-//        for (int a = 0; a < pontos.size() - 1; a++) {
-//            render.setColor(Color.blue);
-//            render.drawLine(pontos.get(a).x, pontos.get(a).y, pontos.get(a + 1).x, pontos.get(a + 1).y);
-//        }
-//    }
-
-//    private void criaPontos() {
-//
-//        porcentagem = 0.1;
-//
-//        oix = 0;
-//        ofx = auxList.size();
-//        dix = (int) (x0 + margem());
-//        dfx = x1;
-//
-//        oiy = getMaxValue();
-//        ofy = getMinValue();
-//        diy = y0;
-//        dfy = (int) (y1 - margem());
-//
-//        for (int i = 0; i < auxList.size(); i++) {
-//            x = i;
-//            mapeamentoX();
-//
-//
-//            for (int j = 0; j < auxList.size(); j++) {
-//                y = auxList.get(i);
-//                mapeamentoY();
-//
-//                render.setColor(Color.RED);
-//                render.fillOval((int) pxr - 4, (int) pyr - 4, 8, 8);
-//            }
-//        }
-//    }
-
-//    /**
-//     *
-//     */
-//    private void criaGrade() {
-//
-//        Stroke oldStroke = render.getStroke();
-//        float[] dash = {2f, 0f, 2f};
-//        BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
-//        render.setStroke(bs);
-//
-//        porcentagem = 0.1;
-//
-//        oix = 0;
-//        ofx = auxList.size() / 2;
-//        dix = (int) (x0 + margem());
-//        dfx = x1;
-//
-//        oiy = getMaxValue();
-//        ofy = getMinValue();
-//        diy = y0;
-//        dfy = (int) (y1 - margem());
-//
-//
-//        double auxFixa = (double) auxList.size() / ofx;
-//        w = auxFixa;
-//
-//        //X
-//        x = 0;
-//        for (int i = 0; i < auxList.size(); i++) {
-//            mapeamentoX();
-//            for (int a = 0; a < auxList.size(); a++) {
-//                render.setColor(Color.lightGray);
-//                render.drawLine((int) pxr, (int) (y1 - margem()), (int) pxr, (int) y0);
 //
 //                if ((double) auxList.size() % ofx == 0) {
 //                    xLabel = Math.round(w) + "";
@@ -560,28 +401,15 @@ public class PlotGraphics {
 //            z++;
 //            y += ((getMaxValue() - getMinValue()) / 10);
 //            //y++;
-//        }
-//        render.setStroke(oldStroke);
-//    }
-//
-//    public void saveImage(String nameGraph) {
-//        try {
-//            ImageIO.write(report, "PNG", new File(nameGraph + ".png"));
-//        } catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
-//    }
 
-//    public void criaImagem(String nameGraph) {
-//        valoresSaida();
-//        background();
-//        whiteBrackground();
-//        criaGrade();
-//        eixoXY();
-//        criaLinhasPontos();
-//        criaPontos();
-//        saveImage(nameGraph);
-//    }
+
+    public void saveImage(String nameGraph) {
+        try {
+            ImageIO.write(plot, "PNG", new File(nameGraph + ".png"));
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 
     /**
      * A classe {@code Universe} é responsável por criar os limites virtuais do domínio da plotagem
@@ -593,23 +421,35 @@ public class PlotGraphics {
      * </p>
      */
     class Universe{
+        //Sistema de coordenadas do universo
         double xini, xend, yini,yend;
+        //Sistema de coordenadas da tela (pixels)
+        int pxini, pxend, pyini, pyend;
         PlotGraphics plot;
         //TODO Implementar todos os métodos do universo
-        public Universe(double xini, double xend, double yini, double yend){
+
+        public Universe(double xini, double xend, double yini, double yend, PlotGraphics plot){
             this.xini = xini;
             this.xend = xend;
             this.yini = yini;
             this.yend = yend;
+            this.plot = plot;
+            calculateLimits();
         }
-
+        private void calculateLimits(){
+            int border = plot.calculateBorder();
+            pxini = border;
+            pxend = plot.getW()-border;
+            pyini = border;
+            pyend = plot.getH()-border;
+        }
         /**
          * Método de {@code Universe} que mapeia um valor em x para uma coordenada horizontal da imagem
          * @param vx Valor no eixo X de {@code Universe}
          * @return A coordenada horizontal do pixel equivalente ao {@code Universe} mapeado na imagem
          */
         public int mapX(double vx){
-            return (int)Math.round(map(vx,xini,xend,0,plot.getW()-1));
+            return (int)Math.round(map(vx,xini,xend,pxini, pxend));
         }
 
         /**
@@ -618,8 +458,7 @@ public class PlotGraphics {
          * @return A coordenada vertical do pixel equivalente ao {@code Universe} mapeado na imagem
          */
         public int mapY(double vy){
-            int result = 0;
-            return result;
+            return (int)Math.round(map(vy, yini, yend, pyend, pyini));
         }
 
         /**
@@ -628,8 +467,7 @@ public class PlotGraphics {
          * @return o valor equivalente no {@code Universe}
          */
         public double inverseMapX(int x){
-            double result = 0;
-            return result;
+            return (map(x, pxini, pxend, xini, xend));
         }
 
         /**
@@ -638,8 +476,7 @@ public class PlotGraphics {
          * @return o valor vertical equivalente no {@code Universe}
          */
         public double inverseMapY(int y){
-            double result = 0;
-            return result;
+            return map(y, pyini, pyend, yend, yini);
         }
 
         /**
