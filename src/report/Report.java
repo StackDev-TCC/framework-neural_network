@@ -46,16 +46,16 @@ public class Report {
 
     /**
      * Construtor da classe {@code Report}, onde é possível definir a largura e altura das gráficos
-     * a serem plotados e o tamanho da fonte que será configurada no {@code CSS} do {@code html}
-     * @param w A largura do gráfico
-     * @param h A altura do gráfico
+     * a serem plotados e o tamanho da fonte que será configurada no {@code CSS} do {@code html}.
+     * @param w A largura do gráfico.
+     * @param h A altura do gráfico.
+     * @param margin A {@code margin} a ser passada para o {@link PlotGraphics}.
      * @param fontSize o tamanho da fonte do texto em {@code html}
      */
-    public Report(int w, int h, int fontSize) {
+    public Report(int w, int h, float margin, int fontSize) {
         this.graphResolution = new int[]{w,h};
-        this.errorTracking = new PlotGraphics(w,h,"repetições", "erros", "Error Behavior");
+        this.errorTracking = new PlotGraphics(w,h, margin,"repetições", "erros", "Error Behavior");
         this.timeComparison = new PlotGraphics(w,h);
-
         this.fontSize = fontSize;
     }
 
@@ -137,6 +137,8 @@ public class Report {
      * a plotagem dos gráficos
      */
     public void generateReport(){
+        errorTracking.plot();
+        timeComparison.plot();
 
     }
 //

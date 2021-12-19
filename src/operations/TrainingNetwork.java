@@ -5,33 +5,44 @@ import report.Report;
 
 /**
  * Classe base para treinamento da rede.
- * <p>
- *     Realiza o treinamento ao percorrer todas as estruturas presentes na {@link NeuralNetwork}.
- * </p>
+ * <p> Realiza o treinamento ao percorrer todas as estruturas presentes na {@link NeuralNetwork}.</p>
  *
- * <p>
- *  O treinamento se dá de forma customizada ao construir uma subclasse para esta {@code TrainingNetwork},
- *  e sobrescrever os métodos {}{@link #startTraining()}, {@link #feedForward()} e {@link #backPropagation()}.
- * </p>
+ * <p> O treinamento se dá de forma customizada ao construir uma subclasse para esta {@code TrainingNetwork},
+ *  e sobrescrever os métodos {}{@link #startTraining()}, {@link #feedForward()} e {@link #backPropagation()}.</p>
+ *
  */
 public abstract class TrainingNetwork {
 
-    private String typeOfLearning = "Supervisioned";
-    private String learningStrategies = "Backpropagation";
-    /**
-     * Objeto rede neural
-     */
+    private TypeOfLearning typeOfLearning;
+    private TrainingStrategy trainingStrategies;
     private NeuralNetwork neuralNetwork;
+    private InputSamples inputSamples;
     private Report report;
 
     /**
-     * Instancia do treinamento redebendo a rede neural
+     * Instancia do treinamento recebendo a rede neural
      *
      * @param neuralNetwork rede neural
      */
     public TrainingNetwork(NeuralNetwork neuralNetwork) {
         this.neuralNetwork = neuralNetwork;
         neuralNetwork.randomizeWeight();
+    }
+
+    /**
+     * Construtor da classe {@code TrainingNetwork} que assume todos os parametros como entrada.
+     * @param typeOfLearning Um {@code Enum} contendo o tipo de aprendizagem que será usado.
+     * @param trainingStrategies Um {@code Enum} contendo qual a estratégia de treinamento.
+     * @param neuralNetwork A {@link NeuralNetwork Rede Neural} a ser treinada.
+     * @param inputSamples O {@link InputSamples Conjunto de dados} de treinamento.
+     * @param report Um objeto instanciado e configurado de {@link Report}.
+     */
+    public TrainingNetwork(TypeOfLearning typeOfLearning, TrainingStrategy trainingStrategies, NeuralNetwork neuralNetwork, InputSamples inputSamples, Report report) {
+        this.typeOfLearning = typeOfLearning;
+        this.trainingStrategies = trainingStrategies;
+        this.neuralNetwork = neuralNetwork;
+        this.inputSamples = inputSamples;
+        this.report = report;
     }
 
     /**
@@ -53,21 +64,23 @@ public abstract class TrainingNetwork {
      */
     public abstract void startTraining();
 
-    public String getTypeOfLearning() {
+    public TypeOfLearning getTypeOfLearning() {
         return typeOfLearning;
     }
 
-    public void setTypeOfLearning(String typeOfLearning) {
+    public void setTypeOfLearning(TypeOfLearning typeOfLearning) {
         this.typeOfLearning = typeOfLearning;
     }
 
-    public String getLearningStrategies() {
-        return learningStrategies;
+    public TrainingStrategy getTrainingStrategies() {
+        return trainingStrategies;
     }
 
-    public void setLearningStrategies(String learningStrategies) {
-        this.learningStrategies = learningStrategies;
+    public void setTrainingStrategies(TrainingStrategy trainingStrategy) {
+        this.trainingStrategies = trainingStrategies;
     }
+
+
 
     public Report getReport(){
         return report;

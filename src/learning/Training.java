@@ -4,8 +4,10 @@ import kernel.NeuralNetwork;
 
 /**
  * Classe de treinamento
+ * @deprecated Alterar o uso desta classe por {@link operations.TrainingNetwork}
  */
-public class Training {
+
+@Deprecated public class Training {
 
     private String typeOfLearning = "Supervisioned";
     private String learningStrategies = "Backpropagation";

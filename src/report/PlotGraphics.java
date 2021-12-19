@@ -26,11 +26,10 @@ public class PlotGraphics {
     private double[] data = null;
     private int w, h;
     private BufferedImage plot = null;
-    private Graphics2D render = null;
     private String xLabel;
     private String yLabel;
     private String title;
-    private float percent;
+    private float margin;
 //
 //    /**
 //     * Ponto x0 da imagem
@@ -135,23 +134,29 @@ public class PlotGraphics {
 
     /**
      * Construtor de {@code PlotGraphics} com todos os parâmetros necessários para a plotagem de um gráfico.
+     * <p>Uma atenção especial ao parâmetro {@code margin}, pois este será usado como uma escala de porcentagem
+     * da imagem (de 0 a 100%) para o cálculo da margem de plotagem. Uma margin de 100 plota o gráfico utilizando
+     * toda a área da imagem, sem bordas. Valores menores vão criando bordas. O ideal para a maioria dos casos são
+     * valores acima de 85%</p>
+     *
      * @param w A largura da Imagem geradora do gráfico.
      * @param h A altura da Imagem geradora do gráfico.
+     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico
      * @param xLabel O rótulo do eixo X.
      * @param yLabel O rótulo do eixo Y.
      * @param title O titulo do gráfico.
      * @param data O {@code Array} de elementos a serem plotados.
      */
-    public PlotGraphics(int w, int h,String xLabel, String yLabel, String title, double[] data){
+    public PlotGraphics(int w, int h, float margin, String xLabel, String yLabel, String title, double[] data){
         this.w = w;
         this.h = h;
+        this.margin = margin;
         this.xLabel = xLabel;
         this.yLabel = yLabel;
         this.title = title;
         this.data = data;
-
+        startImage();
         this.u = generateU();
-
     }
 
     /**
@@ -159,18 +164,20 @@ public class PlotGraphics {
      * antes de se ter calculado os dados para serem plotados
      * @param w A largura da Imagem geradora do gráfico.
      * @param h A altura da Imagem geradora do gráfico.
+     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico
      * @param xLabel O rótulo do eixo X.
      * @param yLabel O rótulo do eixo Y.
      * @param title O titulo do gráfico.
      */
-    public PlotGraphics(int w, int h, String xLabel, String yLabel, String title){
+    public PlotGraphics(int w, int h, float margin, String xLabel, String yLabel, String title){
         this.w = w;
         this.h = h;
+        this.margin = margin;
         this.xLabel = xLabel;
         this.yLabel = yLabel;
         this.title = title;
+        startImage();
     }
-
 
     /**
      * Construtor de {@code PlotGraphics} com largura e altura. Calcula o {@link Universe} quando receber
@@ -181,6 +188,18 @@ public class PlotGraphics {
     public PlotGraphics(int w, int h){
         this.w = w;
         this.h = h;
+        startImage();
+    }
+
+    /**
+     * Método de {@code PlotGraphics}. Carrega uma nova BufferedImage em plot e pinta tudo de branco
+     */
+    private void startImage(){
+        plot = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+        int white = Color.white.getRGB();
+        for(int j = 0; j < h; j++)
+            for(int i = 0; i < w; i++)
+                plot.setRGB(i,j,white);
     }
 
     private double getMaxValue() {
@@ -203,6 +222,48 @@ public class PlotGraphics {
         return min;
     }
 
+    private int calculateBorder(){
+        int max = Math.max(getW(), getH());
+        float p = margin/100.0f;
+        return Math.round(max*(1.0f-p));
+    }
+
+    public void plot(){
+        int border = calculateBorder();
+        Graphics2D render = (Graphics2D) plot.getGraphics();
+        drawBackground(border, render);
+        drawGrid(border, render);
+        drawTitle(border, render);
+        drawAxis(border, render);
+        plotData(border, render);
+    }
+
+    private void drawBackground(int border, Graphics2D render){
+        render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        render.setColor(Color.lightGray);
+        render.fillRect(border, border, w-border, h-border);
+    }
+
+    private void drawGrid(int border, Graphics2D render){
+    //TODO drawgrid()
+    }
+
+    private void drawTitle(int border, Graphics2D render){
+        render.setColor(Color.BLACK);
+        render.drawString(title, w/2 - (render.getFontMetrics().stringWidth(title)/2) ,  calculateBorder()+20);
+    }
+
+    private void drawAxis(int border, Graphics2D render){
+
+        render.setColor(Color.BLACK);
+        render.drawLine(border, h-border, w-border, h-border); // eixo x
+        render.drawLine(border, h-border, border, border); // eixo Y
+    }
+
+    private void plotData(int border, Graphics2D render){
+    //TODO plotData()
+    }
+
     /**
      * Método de {@code PlotGraphics} que insere um novo {@code Array} para ser dimensionado e plotado.
      * @param data o {@code Array} para ser plotado.
@@ -215,7 +276,7 @@ public class PlotGraphics {
     private Universe generateU(){
         if(data != null) {
             double xmin = 0;
-            double xmax = data.length;
+            double xmax = data.length-1;
             double ymin = getMinValue();
             double ymax = getMaxValue();
             return new Universe(xmin, xmax, ymin, ymax);
@@ -223,43 +284,12 @@ public class PlotGraphics {
         return null;
     }
 
-//    private void background() {
-//        if (pixelcalc.getPixels_width() == null && pixelcalc.getPixels_height() == null) {
-//            pixelcalc = new PixelCalc();
-//            pixelcalc.defaultImage();
-//        }
-//        report = new BufferedImage(pixelcalc.getPixels_width(), pixelcalc.getPixels_height(), BufferedImage.TYPE_INT_RGB);
-//        render = (Graphics2D) report.getGraphics();
-//        render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        render.setColor(Color.lightGray);
-//        render.fillRect(0, 0, report.getWidth(), report.getHeight());
-//    }
-
-    private double margem() {
-        return plot.getWidth() * this.percent;
-    }
-
-//    private void whiteBrackground() {
-//
-//        this.porcentagem = 0.05;
-//        x0 = margem();
-//        x1 = report.getWidth() - margem() - 1;
-//        y0 = margem();
-//        y1 = report.getHeight() - 1;
-//
-//        render.setColor(Color.WHITE);
-//        render.fillRect((int) x0, (int) y0 - 15, (int) x1 - (int) x0 + 15, (int) y1 - (int) y0);
-//        setTitulo("Gráfico da bagaça");
-//
-//    }
-
     /**
      * Método de {@code PlotGraphics} que permite a definição do titulo da plotagem da imagem de forma parametrizada
      * @param title titulo do gráfico
      */
-    public void setTitulo(String title) {
-        render.setColor(Color.BLACK);
-        render.drawString(title, w/2 - (render.getFontMetrics().stringWidth(title)/2) ,  20);
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -324,15 +354,7 @@ public class PlotGraphics {
      * @return Graphic image render
      */
     public Graphics2D getRender() {
-        return render;
-    }
-
-    /**
-     * Método de {@code PlotGraphics} que insere um novo graphic da image {@code render}.
-     * @param render a graphic image render {@code render}.
-     */
-    public void setRender(Graphics2D render) {
-        this.render = render;
+        return (Graphics2D) plot.getGraphics();
     }
 
     /**
@@ -376,14 +398,6 @@ public class PlotGraphics {
     }
 
     /**
-     * Método de {@code PlotGraphics} que retornar o título {@code title}
-     * @param title título
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
      * Método de {@code PlotGraphics} que retornar o plot {@code plot}
      * @return renderização
      */
@@ -399,22 +413,7 @@ public class PlotGraphics {
         this.plot = plot;
     }
 
-    //    public void mapeamentoX() {
-//        pxr = ((x - oix) * (dfx - dix) / (ofx - oix)) + dix;
-//    }
-//
-//    public void mapeamentoY() {
-//        pyr = ((y - ofy) * (diy - dfy) / (oiy - ofy)) + dfy;
-//    }
 
-//    public void eixoXY() {
-//        porcentagem = 0.1;
-//
-//        render.setColor(Color.BLACK);
-//        render.drawLine((int) x0 + 75, (int) y1 - (int) margem(), (int) x1, (int) y1 - (int) margem()); // eixo x
-//        render.drawLine((int) x0 + (int) margem(), (int) y0, (int) x0 + (int) margem(), (int) y1 - 75); // eixo Y
-//
-//    }
 
 //    public void criaLinhasPontos() {
 //        pontos = new ArrayList<>();
@@ -599,8 +598,7 @@ public class PlotGraphics {
          * @return A coordenada horizontal do pixel equivalente ao {@code Universe} mapeado na imagem
          */
         public int mapX(double vx){
-            int result = 0;
-            return result;
+            return (int)Math.round(map(vx,xini,xend,0,plot.getW()-1));
         }
 
         /**
@@ -633,10 +631,19 @@ public class PlotGraphics {
             return result;
         }
 
+        /**
+         * Mapeamento geral, dado o valor original, a escala original e a escala de destino a ser mapeada
+         * @param v O valor original
+         * @param oi Valor inicial da escala de origem
+         * @param of Valor final da escala de origem
+         * @param di Valor inicial da escala de destino
+         * @param df Valor final da escala de destino
+         * @return O Valor v mapeado na escala de destino
+         */
         private double map(double v, double oi, double of, double di, double df){
-            //TODO fazer o mapeamento do universo
-            double result = 0;
-            return result;
+            if(of-oi == 0 )
+                return Float.NaN;
+            return (v-oi)*(df-di)/(of-oi) + di;
         }
     }
 }
