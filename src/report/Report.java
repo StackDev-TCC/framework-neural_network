@@ -1,12 +1,6 @@
 package report;
 
-import Utils.PixelCalc;
-import kernel.NeuralNetwork;
 import operations.*;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * A classe {@code Report} é responsável por transformar os dados de uma {@link kernel.NeuralNetwork},

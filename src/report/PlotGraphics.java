@@ -1,7 +1,7 @@
 package report;
 
 
-import Utils.PixelCalc;
+import utils.PixelCalc;
 import operations.TrainingNetwork;
 
 import java.awt.*;
