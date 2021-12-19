@@ -361,10 +361,6 @@ public class PlotGraphics {
         this.plot = plot;
     }
 
-
-
-//
-//
 //                if ((double) auxList.size() % ofx == 0) {
 //                    xLabel = Math.round(w) + "";
 //                } else {
@@ -375,21 +371,7 @@ public class PlotGraphics {
 //
 //                render.setColor(Color.BLACK);
 //                render.drawString(xLabel, (int) pxr - labelWidthx / 2, (int) y1 - (int) margem() + metrics.getHeight() + 5);
-//            }
-//            w = w + auxFixa;
-//            x++;
-//        }
-//
-//        //Y
-//        y = getMinValue();
-//        //y = 1;
-//        for (int j = 0; j < 11; j++) {
-//
-//            mapeamentoY();
-//            for (int i = 0; i < 11; i++) {
-//                render.setColor(Color.lightGray);
-//                render.drawLine((int) (x0 + margem()), (int) pyr, (int) x1, (int) pyr);
-//
+
 //                yLabel = Math.round(y * 100.00) / 100.00 + "";
 //
 //                FontMetrics metrics = render.getFontMetrics();
@@ -397,12 +379,7 @@ public class PlotGraphics {
 //
 //                render.setColor(Color.BLACK);
 //                render.drawString(yLabel, (int) x0 + (int) margem() - labelWidthy - 10, (int) pyr + metrics.getHeight() / 2);
-//            }
-//            z++;
-//            y += ((getMaxValue() - getMinValue()) / 10);
-//            //y++;
-
-
+    
     public void saveImage(String nameGraph) {
         try {
             ImageIO.write(plot, "PNG", new File(nameGraph + ".png"));
