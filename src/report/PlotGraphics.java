@@ -35,6 +35,173 @@ public class PlotGraphics {
     private String title;
     private float margin;
 
+    public static void main(String[] args){
+        double[] data = new double[]{400, 401, 398, 396, 394, 380, 370, 340, 345, 340, 320, 305, 250, 140, 100, 98, 95,
+                94, 92, 90, 89, 87, 84, 81, 70, 59, 57, 55, 55, 53, 51, 50, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
+                27, 26, 25, 24, 23, 22, 21, 20, 18, 16, 14, 10, 9, 8, 7,6, 5, 4, 3, 2, 1, 0, 0, 0, 0};
+        PlotGraphics pg = new PlotGraphics(800,600,90,"eixoX", "eixoY","Gráfico", data);
+        pg.plot();
+        JFrame f = new JFrame("Graphic");
+        f.setBounds(10,10,pg.getW()+4,pg.getH()+15);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel l = new JLabel();
+        l.setIcon(new ImageIcon(pg.getPlot()));
+        f.add(l);
+        f.setVisible(true);
+        pg.saveImage("test");
+    }
+
+    private double getMaxValue() {
+        double max = Double.MIN_VALUE;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] > max) {
+                max = data[i];
+            }
+        }
+        return max;
+    }
+
+    private double getMinValue() {
+        double min = Double.MAX_VALUE;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] < min) {
+                min = data[i];
+            }
+        }
+        return min;
+    }
+
+    private int calculateBorder(){
+        int max = Math.max(getW(), getH());
+        float p = margin/100.0f;
+        return Math.round(max*(1.0f-p));
+    }
+
+    public void plot(){
+        int border = calculateBorder();
+        Graphics2D render = (Graphics2D) plot.getGraphics();
+        drawBackground(border, render);
+        drawGrid(border, render);
+        drawTitle(border, render);
+        drawAxis(border, render);
+        plotData(border, render);
+    }
+
+    private void drawBackground(int border, Graphics2D render){
+        render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        render.setColor(Color.lightGray);
+        render.fillRect(border, border, w-2*border, h-2*border);
+    }
+
+    private void drawGrid(int border, Graphics2D render){
+        //salva a linha no estilo continuo
+        Stroke oldStroke = render.getStroke();
+        //muda o estilo da linha para pontilhada
+        float[] dash = {2f, 0f, 2f};
+        BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
+        render.setStroke(bs);
+
+        int lineSpace = Math.round(Math.max(w , h) - border * 0.01f);
+
+        int tamV = h-border-border;
+        int inc = tamV/20;
+
+        double sizey = u.yend - u.yini;
+        double incy = sizey/20.0;
+
+        double y = u.yend;
+        for(int j = 0; j <= tamV; j+=inc, y-=incy){
+            render.setColor(Color.darkGray);
+            render.drawLine(border, border+j, w-border, border+j);
+
+            render.setColor(Color.BLACK);
+            FontMetrics metrics = render.getFontMetrics();
+            yLabel = Math.round(y) + "";
+            int labelWidthy = metrics.stringWidth(yLabel);
+            render.drawString(yLabel,  border - labelWidthy - 10, border + j + metrics.getHeight() / 2);
+        }
+//
+//        for (int i = 0; i < data.length; i++){
+//            //seleciona a cor cinza escura
+//            render.setColor(Color.darkGray);
+//            //desenha linhas verticais
+//            render.drawLine(u.mapX(i), u.pyend, u.mapX(i), u.pyini);
+//            //desenha linhas horizontais
+//            render.drawLine(u.pxini, u.mapY(data[i]), u.pxend, u.mapY(data[i]));
+//
+//            //mudando a cor para preto
+//            render.setColor(Color.BLACK);
+//            FontMetrics metrics = render.getFontMetrics();
+//      yLabel = Math.round(data[i]) + "";
+////            int labelWidthy = metrics.stringWidth(yLabel);
+////            render.drawString(yLabel,  u.pxini - labelWidthy - 10, u.mapY(data[i]) + metrics.getHeight() / 2);
+//            //cria label eixo X com as posições do array e salva o tamanho da label
+//            xLabel = Math.round(i) + "";
+//            int labelWidthx = metrics.stringWidth(xLabel);
+//            render.drawString(xLabel, u.mapX(i) - labelWidthx / 2, u.pyend + metrics.getHeight() + border-Math.round(0.75f*border));
+//
+//            //cria label eixo Y com os valores do array e salva o tamanho da label
+//            yLabel = Math.round(data[i]) + "";
+//            int labelWidthy = metrics.stringWidth(yLabel);
+//            render.drawString(yLabel,  u.pxini - labelWidthy - 10, u.mapY(data[i]) + metrics.getHeight() / 2);
+//        }
+        //retorna a linha para o estilo continuo
+        render.setStroke(oldStroke);
+    }
+
+    private void drawTitle(int border, Graphics2D render){
+        render.setColor(Color.BLACK);
+        render.drawString(title, w/2 - (render.getFontMetrics().stringWidth(title)/2) ,  calculateBorder()-20);
+    }
+
+    private void drawAxis(int border, Graphics2D render){
+
+        render.setColor(Color.BLACK);
+        render.drawLine(border-Math.round(0.25f*border), h-border, w-border, h-border); // eixo x
+        render.drawLine(border, h-border+Math.round(0.25f*border), border, border); // eixo Y
+    }
+
+    private void plotData(int border, Graphics2D render){
+
+        int bulletDiameter = Math.round(Math.min(w , h) * 0.01f);
+        int prevX = u.mapX(0);
+        int prevY = u.mapY(data[0]);
+
+        for (int i = 1; i < data.length; i++){
+            int x = u.mapX(i);
+            int y = u.mapY(data[i]);
+
+            render.setColor(Color.BLUE);
+            render.drawLine(prevX,prevY,x,y);
+            render.setColor(Color.RED);
+            render.fillOval(x - bulletDiameter/2,  y - bulletDiameter/2, bulletDiameter, bulletDiameter);
+            prevX = x;
+            prevY = y;
+        }
+
+        for (int i = 0; i < data.length; i++){
+            int x = u.mapX(i);
+            int y = u.mapY(data[i]);
+
+            render.setColor(Color.RED);
+            render.fillOval(x - bulletDiameter/2,  y - bulletDiameter/2, bulletDiameter, bulletDiameter);
+        }
+    }
+
+    private Universe generateU(){
+        if(data != null) {
+            double xmin = 0;
+            double xmax = data.length-1;
+            double ymin = getMinValue();
+            double ymax = getMaxValue();
+            double tmp = ymax-ymin;
+            ymax+= tmp * 0.1;
+            ymin-= tmp * 0.1;
+            return new Universe(xmin, xmax, ymin, ymax, this);
+        }
+        return null;
+    }
+
     /**
      * Construtor de {@code PlotGraphics} com todos os parâmetros necessários para a plotagem de um gráfico.
      * <p>Uma atenção especial ao parâmetro {@code margin}, pois este será usado como uma escala de porcentagem
@@ -105,96 +272,6 @@ public class PlotGraphics {
                 plot.setRGB(i,j,white);
     }
 
-    private double getMaxValue() {
-        double max = Double.MIN_VALUE;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] > max) {
-                max = data[i];
-            }
-        }
-        return max;
-    }
-
-    private double getMinValue() {
-        double min = Double.MAX_VALUE;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] < min) {
-                min = data[i];
-            }
-        }
-        return min;
-    }
-
-    private int calculateBorder(){
-        int max = Math.max(getW(), getH());
-        float p = margin/100.0f;
-        return Math.round(max*(1.0f-p));
-    }
-
-    public void plot(){
-        int border = calculateBorder();
-        Graphics2D render = (Graphics2D) plot.getGraphics();
-        drawBackground(border, render);
-        drawGrid(border, render);
-        drawTitle(border, render);
-        drawAxis(border, render);
-        plotData(border, render);
-    }
-
-    private void drawBackground(int border, Graphics2D render){
-        render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        render.setColor(Color.lightGray);
-        render.fillRect(border, border, w-2*border, h-2*border);
-    }
-
-    private void drawGrid(int border, Graphics2D render){
-
-        Stroke oldStroke = render.getStroke();
-        float[] dash = {2f, 0f, 2f};
-        BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
-        render.setStroke(bs);
-
-        int lineSpace = Math.round(Math.max(w , h) - border * 0.1f);
-
-        for (int i = 0; i < data.length; i++){
-            render.setColor(Color.darkGray);
-            render.drawLine(u.mapX(i), u.pyend, u.mapX(i), u.pyini);
-            render.drawLine(u.pxini, u.mapY(data[i]), u.pxend, u.mapY(data[i]));
-        }
-        render.setStroke(oldStroke);
-    }
-
-    private void drawTitle(int border, Graphics2D render){
-        render.setColor(Color.BLACK);
-        render.drawString(title, w/2 - (render.getFontMetrics().stringWidth(title)/2) ,  calculateBorder()-20);
-    }
-
-    private void drawAxis(int border, Graphics2D render){
-
-        render.setColor(Color.BLACK);
-        render.drawLine(border-Math.round(0.25f*border), h-border, w-border, h-border); // eixo x
-        render.drawLine(border, h-border+Math.round(0.25f*border), border, border); // eixo Y
-    }
-
-    private void plotData(int border, Graphics2D render){
-
-        int bulletDiameter = Math.round(Math.max(w , h) * 0.01f);
-        int prevX = u.mapX(0);
-        int prevY = u.mapY(data[0]);
-
-        for (int i = 1; i < data.length; i++){
-            int x = u.mapX(i);
-            int y = u.mapY(data[i]);
-
-            render.setColor(Color.BLUE);
-            render.drawLine(prevX,prevY,x,y);
-            render.setColor(Color.RED);
-            render.fillOval(x - bulletDiameter/2,  y - bulletDiameter/2, bulletDiameter, bulletDiameter);
-            prevX = x;
-            prevY = y;
-        }
-    }
-
     /**
      * Método de {@code PlotGraphics} que insere um novo {@code Array} para ser dimensionado e plotado.
      * @param data o {@code Array} para ser plotado.
@@ -202,34 +279,6 @@ public class PlotGraphics {
     public void setData(double[] data){
         this.data = data;
         this.u = generateU();
-    }
-
-    private Universe generateU(){
-        if(data != null) {
-            double xmin = 0;
-            double xmax = data.length-1;
-            double ymin = getMinValue();
-            double ymax = getMaxValue();
-            return new Universe(xmin, xmax, ymin, ymax, this);
-        }
-        return null;
-    }
-
-    public static void main(String[] args){
-        double[] data = new double[]{400, 401, 398, 396, 394, 380, 370, 340, 345, 340, 320, 305, 250, 140, 100, 98, 95,
-        94, 92, 90, 89, 87, 84, 81, 70, 59, 57, 55, 55, 53, 51, 50, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
-        27, 26, 25, 24, 23, 22, 21, 20, 18, 16, 14, 10, 9, 8, 7,6, 5, 4, 3, 2, 1, 0, 0, 0, 0};
-        PlotGraphics pg = new PlotGraphics(800,600,90,"eixoX", "eixoY","Gráfico", data);
-        pg.plot();
-        JFrame f = new JFrame("Graphic");
-        f.setBounds(10,10,pg.getW()+4,pg.getH()+15);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JLabel l = new JLabel();
-        l.setIcon(new ImageIcon(pg.getPlot()));
-        f.add(l);
-        f.setVisible(true);
-        pg.saveImage("test");
-
     }
 
     /**
@@ -361,30 +410,14 @@ public class PlotGraphics {
         this.plot = plot;
     }
 
-//                if ((double) auxList.size() % ofx == 0) {
-//                    xLabel = Math.round(w) + "";
-//                } else {
-//                    xLabel = Math.round(w * 100.0) / 100.0 + "";
-//                }
-//                FontMetrics metrics = render.getFontMetrics();
-//                int labelWidthx = metrics.stringWidth(xLabel);
-//
-//                render.setColor(Color.BLACK);
-//                render.drawString(xLabel, (int) pxr - labelWidthx / 2, (int) y1 - (int) margem() + metrics.getHeight() + 5);
-
-//                yLabel = Math.round(y * 100.00) / 100.00 + "";
-//
-//                FontMetrics metrics = render.getFontMetrics();
-//                int labelWidthy = metrics.stringWidth(yLabel);
-//
-//                render.setColor(Color.BLACK);
-//                render.drawString(yLabel, (int) x0 + (int) margem() - labelWidthy - 10, (int) pyr + metrics.getHeight() / 2);
-    
-    public void saveImage(String nameGraph) {
+    /**
+     * Método de {@code PlotGraphics} que salva a imagem criada e adiciona .PNG ao arquivo
+     * @param nameGraphic nome do arquivo
+     */
+    public void saveImage(String nameGraphic) {
         try {
-            ImageIO.write(plot, "PNG", new File(nameGraph + ".png"));
+            ImageIO.write(plot, "PNG", new File(nameGraphic + ".png"));
         } catch (IOException ioe) {
-            ioe.printStackTrace();
         }
     }
 
