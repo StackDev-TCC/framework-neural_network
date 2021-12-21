@@ -39,7 +39,9 @@ Computação, à Faculdade FAENG do Centro Universitário Fundação Santo Andr�
 
 ### Pré-requisitos
 
-Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
+Além disto é bom ter um editor para trabalhar com o código como: 
+[VSCode](https://code.visualstudio.com/)
+[IntelliJ IDEA](https://www.jetbrains.com)
 
 ### Rodando o JAR via JSHEL
 
