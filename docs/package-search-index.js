@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"activationfunctions"},{"l":"All Packages","u":"allpackages-index.html"},{"l":"interfaces"},{"l":"kernel"},{"l":"main"},{"l":"network"},{"l":"network.and"},{"l":"network.mnist"},{"l":"operations"},{"l":"report"},{"l":"Utils"}];updateSearchResults();

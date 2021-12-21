@@ -101,16 +101,21 @@ public class PlotGraphics {
         BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
         render.setStroke(bs);
 
-        int lineSpace = Math.round(Math.max(w , h) - border * 0.01f);
+        int tamH = h-border*2;
+        int incH = tamH/20;
 
-        int tamV = h-border-border;
-        int inc = tamV/20;
+        int tamW = w-border*2;
+        int incW = tamW/10;
+
+        double sizex = u.xend - u.xini;
+        double incx = sizex/10.0;
+        double x = u.xend;
 
         double sizey = u.yend - u.yini;
         double incy = sizey/20.0;
-
         double y = u.yend;
-        for(int j = 0; j <= tamV; j+=inc, y-=incy){
+
+        for(int j = 0; j <= tamH; j+=incH, y-=incy){
             render.setColor(Color.darkGray);
             render.drawLine(border, border+j, w-border, border+j);
 
@@ -120,31 +125,17 @@ public class PlotGraphics {
             int labelWidthy = metrics.stringWidth(yLabel);
             render.drawString(yLabel,  border - labelWidthy - 10, border + j + metrics.getHeight() / 2);
         }
-//
-//        for (int i = 0; i < data.length; i++){
-//            //seleciona a cor cinza escura
-//            render.setColor(Color.darkGray);
-//            //desenha linhas verticais
-//            render.drawLine(u.mapX(i), u.pyend, u.mapX(i), u.pyini);
-//            //desenha linhas horizontais
-//            render.drawLine(u.pxini, u.mapY(data[i]), u.pxend, u.mapY(data[i]));
-//
-//            //mudando a cor para preto
-//            render.setColor(Color.BLACK);
-//            FontMetrics metrics = render.getFontMetrics();
-//      yLabel = Math.round(data[i]) + "";
-////            int labelWidthy = metrics.stringWidth(yLabel);
-////            render.drawString(yLabel,  u.pxini - labelWidthy - 10, u.mapY(data[i]) + metrics.getHeight() / 2);
-//            //cria label eixo X com as posições do array e salva o tamanho da label
-//            xLabel = Math.round(i) + "";
-//            int labelWidthx = metrics.stringWidth(xLabel);
-//            render.drawString(xLabel, u.mapX(i) - labelWidthx / 2, u.pyend + metrics.getHeight() + border-Math.round(0.75f*border));
-//
-//            //cria label eixo Y com os valores do array e salva o tamanho da label
-//            yLabel = Math.round(data[i]) + "";
-//            int labelWidthy = metrics.stringWidth(yLabel);
-//            render.drawString(yLabel,  u.pxini - labelWidthy - 10, u.mapY(data[i]) + metrics.getHeight() / 2);
-//        }
+
+        for(int i = 0; i <= tamW; i+=incW, x+=incx){
+            render.setColor(Color.darkGray);
+            render.drawLine(border + i, border , border + i, h - border);
+
+            render.setColor(Color.BLACK);
+            FontMetrics metrics = render.getFontMetrics();
+            xLabel = i + "";
+            int labelWidthx = metrics.stringWidth(xLabel);
+            render.drawString(xLabel, i - labelWidthx / 2,  h + metrics.getHeight() + border - Math.round(0.75f*border));
+        }
         //retorna a linha para o estilo continuo
         render.setStroke(oldStroke);
     }
