@@ -16,10 +16,10 @@ Tabela de conteúdos
 <!--ts-->
    * [Sobre](#Sobre)
    * [Features](#features)
-   * [Projetos futuros](#projetos futuros)
+   * [Projetos-futuros](#projetos futuros)
    * [Javadoc](https://stackdev-tcc.github.io/framework-neural_network/)
    * [Pré-requisitos](#pré-requisitos)
-   * [Rodando o JAR via JSHEL](#rodando o JAR via JSHEL)
+   * [Rodando-JAR-JSHEL](#rodando o JAR via JSHEL)
    * [Tecnologias](#tecnologias)
    * [Autores](#autores)
 <!--te-->
