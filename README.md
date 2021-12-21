@@ -16,7 +16,7 @@ Tabela de conteúdos
 <!--ts-->
    * [Sobre](#Sobre)
    * [Features](#features)
-   * [Projetos-futuros](#projetos futuros)
+   * [Projetos-futuros](#projetos-futuros)
    * [Javadoc](https://stackdev-tcc.github.io/framework-neural_network/)
    * [Pré-requisitos](#pré-requisitos)
    * [Rodando-JAR-JSHEL](#rodando o JAR via JSHEL)
@@ -34,7 +34,7 @@ Computação, à Faculdade FAENG do Centro Universitário Fundação Santo Andr�
 - [x] Cria e manipula redes neurais
 - [x] Treinamento
 
-### Projetos futuros
+### Projetos-futuros
 
 - [ ] Utilização de tensores
 
