@@ -37,7 +37,7 @@ public class PlotGraphics {
 
     public static void main(String[] args){
         double[] data = new double[]{400, 401, 398, 396, 394, 380, 370, 340, 345, 340, 320, 305, 250, 140, 100, 98, 95,
-                94, 92, 90, 89, 87, 84, 81, 70, 59, 57, 55, 55, 53, 51, 50, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
+                94, 92, 90, 89, 86, 84, 81, 70, 59, 57, 55, 55, 53, 51, 50, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
                 27, 26, 25, 24, 23, 22, 21, 20, 18, 16, 14, 10, 9, 8, 7,6, 5, 4, 3, 2, 1, 0, 0, 0, 0};
         PlotGraphics pg = new PlotGraphics(800,600,90,"eixoX", "eixoY","Gráfico", data);
         pg.plot();
@@ -109,7 +109,7 @@ public class PlotGraphics {
 
         double sizex = u.xend - u.xini;
         double incx = sizex/10.0;
-        double x = u.xend;
+        double x = u.xini;
 
         double sizey = u.yend - u.yini;
         double incy = sizey/20.0;
@@ -123,7 +123,7 @@ public class PlotGraphics {
             FontMetrics metrics = render.getFontMetrics();
             yLabel = Math.round(y) + "";
             int labelWidthy = metrics.stringWidth(yLabel);
-            render.drawString(yLabel,  border - labelWidthy - 10, border + j + metrics.getHeight() / 2);
+            render.drawString(yLabel,  border - labelWidthy - 10,  border + j + 5);
         }
 
         for(int i = 0; i <= tamW; i+=incW, x+=incx){
@@ -132,9 +132,9 @@ public class PlotGraphics {
 
             render.setColor(Color.BLACK);
             FontMetrics metrics = render.getFontMetrics();
-            xLabel = i + "";
+            xLabel = Math.round(x) + "";
             int labelWidthx = metrics.stringWidth(xLabel);
-            render.drawString(xLabel, i - labelWidthx / 2,  h + metrics.getHeight() + border - Math.round(0.75f*border));
+            render.drawString(xLabel, border + i - labelWidthx/2, h - border + 20);
         }
         //retorna a linha para o estilo continuo
         render.setStroke(oldStroke);
@@ -148,8 +148,8 @@ public class PlotGraphics {
     private void drawAxis(int border, Graphics2D render){
 
         render.setColor(Color.BLACK);
-        render.drawLine(border-Math.round(0.25f*border), h-border, w-border, h-border); // eixo x
-        render.drawLine(border, h-border+Math.round(0.25f*border), border, border); // eixo Y
+        render.drawLine(border, h-border, w-border, h-border); // eixo x
+        render.drawLine(border, h-border, border, border); // eixo Y
     }
 
     private void plotData(int border, Graphics2D render){
@@ -187,7 +187,7 @@ public class PlotGraphics {
             double ymax = getMaxValue();
             double tmp = ymax-ymin;
             ymax+= tmp * 0.1;
-            ymin-= tmp * 0.1;
+            ymin-= tmp * 0;
             return new Universe(xmin, xmax, ymin, ymax, this);
         }
         return null;
