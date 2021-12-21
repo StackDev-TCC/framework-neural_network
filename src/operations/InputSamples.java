@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Classe input samples é responsável por receber as amostras e manipular
  */
-public class InputSamples {
+public class InputSamples{
 
     /**
      * Lista de amostras
@@ -57,8 +57,7 @@ public class InputSamples {
      */
     public void nextSample() {
         if (index < samples.size())
-            input = new Input(samples.get(index++));
-//            input.setValues(samples.get(index++));
+            input.setValues(samples.get(index++));
     }
 
     //Deixar void?
@@ -79,16 +78,16 @@ public class InputSamples {
 //            input.setValues(samples.get(i));
     }
 
-    /**
-     * Ir para a próxima amostra
-     *
-     * @return verdadeiro se tiver próximo, falso se não tiver
-     */
-    public boolean next() {
-        if (samples.get(samples.size() - 1) == null)
-            return false;
-        return true;
-    }
+//    /**
+//     * Ir para a próxima amostra
+//     *
+//     * @return verdadeiro se tiver próximo, falso se não tiver
+//     */
+//    public boolean next() {
+//        if (samples.get(samples.size() - 1) == null)
+//            return false;
+//        return true;
+//    }
 
     /**
      * Obter valor mínimo da amostra

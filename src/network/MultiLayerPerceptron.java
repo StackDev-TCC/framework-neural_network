@@ -18,18 +18,24 @@ public class MultiLayerPerceptron extends TrainingNetwork {
         super(typeOfLearning, trainingStrategies, neuralNetwork, inputSamples, report);
     }
 
-    @Override
+
     public void feedForward() {
 
     }
 
-    @Override
     public void backPropagation() {
 
     }
 
-    @Override
-    public void startTraining() {
 
+    public void errorCheck(){
+        feedForward();
     }
+
+
+    public void reconfigureNetwork(){
+        backPropagation();
+    }
+
+
 }

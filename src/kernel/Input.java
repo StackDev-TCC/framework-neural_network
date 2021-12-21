@@ -178,5 +178,6 @@ public class Input {
      */
     public void setValues(ArrayList<Double> values) {
         this.values = values;
+        convertToLayer();
     }
 }
