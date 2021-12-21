@@ -19,7 +19,6 @@ Tabela de conteúdos
    * [Projetos-futuros](#projetos-futuros)
    * [Javadoc](https://stackdev-tcc.github.io/framework-neural_network/)
    * [Pré-requisitos](#pré-requisitos)
-   * [Rodando-JAR-JSHEL](#rodando o JAR via JSHEL)
    * [Tecnologias](#tecnologias)
    * [Autores](#autores)
 <!--te-->
