@@ -34,7 +34,6 @@ public abstract class TrainingNetwork{
     protected int samplesPerEpoch;
     protected Report report;
 
-
     /**
      * Construtor de {@code TrainingNetwork} que recebe uma {@link NeuralNetwork} assumidamente pronta
      * e configurada.
@@ -87,9 +86,8 @@ public abstract class TrainingNetwork{
     }
 
     public abstract void errorCheck();
+
     public abstract void reconfigureNetwork();
-
-
 
 //    /**
 //     * O método {@code feedForward} é responsável por acompanhar o resultado de cada {@link NeuralNetwork#propagate()},
@@ -103,8 +101,6 @@ public abstract class TrainingNetwork{
 //     * erros, reconfigurar os pessos das {@link kernel.Connection Connections}.
 //     */
 //    public abstract void backPropagation();
-
-
 
     public TypeOfLearning getTypeOfLearning() {
         return typeOfLearning;
