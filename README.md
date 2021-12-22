@@ -17,7 +17,7 @@ Tabela de conteúdos
    * [Sobre](#Sobre)
    * [Features](#features)
    * [Projetos-futuros](#projetos-futuros)
-   * [Javadoc](https://stackdev-tcc.github.io/framework-neural_network/)
+   * [Javadoc](https://stackdev-tcc.github.io/API/)
    * [Pré-requisitos](#pré-requisitos)
    * [Tecnologias](#tecnologias)
    * [Autores](#autores)
@@ -48,6 +48,10 @@ Além disto é bom ter um editor para trabalhar com o código como:
 ```bash
 # Substitua "C:\\caminho do arquivo" pelo local onde ser encontra o arquivo .JAR
 jshell> /env -class-path C:\\caminho_do_arquivo
+
+jshell> import
+
+jshell> import kernel.*;
 
 ```
 
