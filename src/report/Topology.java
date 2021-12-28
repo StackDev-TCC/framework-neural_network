@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * {@link #createTopology(NeuralNetwork, int, int)} uma forma de renderizar a topologia atual da
  * instância da {@link NeuralNetwork}</p>
  *
- * <p style="font-color='#ff0000'">Só funciona à partir da versão 14 do Java</p>
+ * <p style="color:red">Só funciona à partir da versão 14 do Java, pois faz uso de classes {@code Records}.</p>
  */
 public class Topology {
     int w, h;
@@ -43,6 +43,9 @@ public class Topology {
     }
 
     private static void allocateElements(int width, int height) {
+
+        // Inserindo as duas camadas de Input (data e layer)
+
         int xOffset, yOffset;
         Input input = nn.getInput();
         int qtdOfLayers = nn.getLayers().size() + 2;
@@ -58,6 +61,9 @@ public class Topology {
             nodes.add(n);
             yOffset += spacer + diameter;
         }
+
+        //Inserindo as camadas intermediárias
+
         yOffset = diameter / 2;
         xOffset += width / qtdOfLayers;
         for (Layer l : nn.getLayers()) {
@@ -71,6 +77,7 @@ public class Topology {
             yOffset = diameter / 2;
         }
 
+        //Inserindo Output
         draw(width, height);
     }
 
