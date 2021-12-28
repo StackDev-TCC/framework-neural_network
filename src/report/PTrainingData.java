@@ -1,6 +1,6 @@
 package report;
 
-public class PTrainingData {
+class PTrainingData {
     long timestamp;
     int epoch;
     double newEpochProbability;
