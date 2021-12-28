@@ -10,10 +10,10 @@ import operations.TrainingNetwork;
  * uma classe como pertencente a uma função de ativação.
  * Estes métodos serão chamados quando a rede neural criada por {@link NeuralNetwork}
  * necessitar classificar um elemento de entrada, ao executar o método {@link NeuralNetwork#propagate()},
- * chamada tanto por {@link TrainingNetwork#feedForward()}, como por qualquer classe que usará a rede para
+ * chamada tanto por {@link TrainingNetwork#errorCheck()}, como por qualquer classe que usará a rede para
  * classificação de sua entrada.
  * Já o método {@link #derivate(double)} será usado apenas durante o treinamento, para reajustar os
- * pesos dos {@link kernel.Connection} através de {@link TrainingNetwork#backPropagation()}.
+ * pesos dos {@link kernel.Connection} através de {@link TrainingNetwork#reconfigureNetwork()} .
  */
 public interface ActivationFunction {
 
@@ -27,7 +27,7 @@ public interface ActivationFunction {
 
     /**
      * Inplementar a derivada da função usada em {@link #calculate(double)}, para ser
-     * utilizada quando chamar {@link TrainingNetwork#backPropagation()}
+     * utilizada quando chamar {@link TrainingNetwork#reconfigureNetwork()}.
      * @param value valor atual de um neurônio
      * @return Retorna a derivada implementada da função presente em {@link #calculate(double)}
      */

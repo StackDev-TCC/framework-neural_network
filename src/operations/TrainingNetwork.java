@@ -10,7 +10,7 @@ import report.Report;
  * <p> O treinamento se dá de forma customizada ao construir uma subclasse para esta {@code TrainingNetwork},
  * e implementar os métodos {@link #errorCheck()} e {@link #reconfigureNetwork()}.</p>
  *
- * <p> A classe {@code TrainingNetwork} executa o {@@link #startTraining} carregando novos valores de
+ * <p> A classe {@code TrainingNetwork} executa o {@link #startTraining} carregando novos valores de
  * input para cada novo valor em {@link InputSamples}, dentro das configurações de limite de {@code Epoch}
  * e para cada novo valor de {@code samplesPerEpoch}. Se {@code samplesPerEpoch} for 0, o {@link #startTraining()}
  * usará todos os valores em {@code inputSamples}.</p>

@@ -43,11 +43,11 @@ Além disto é bom ter um editor para trabalhar com o código como:
 [VSCode](https://code.visualstudio.com/)
 [IntelliJ IDEA](https://www.jetbrains.com)
 
-### Rodando o JAR via JSHEL
+### Rodando o JAR via JSHELL
 
 ```bash
 # Substitua "C:\\caminho do arquivo" pelo local onde ser encontra o arquivo .JAR
-jshell> /env -class-path C:\\caminho_do_arquivo
+jshell> /env -class-path C:\\caminho_do_arquivo.jar
 
 jshell> import
 

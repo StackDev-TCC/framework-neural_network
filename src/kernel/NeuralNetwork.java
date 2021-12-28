@@ -14,24 +14,24 @@ import java.util.List;
  *
  * <p>Os métodos {@link NeuralNetwork#training()}  e {@link NeuralNetwork#propagate()} só funcionarão após todos estes
  * elementos estiverem definidos, configurados e acoplados à NeuralNetwork pelos métodos {@link #attachInput(Input)},
- * {@link #attachOutput(Output)}} e {@link #addLayer(Layer)}.</p><pre>
- *     NeuralNetwork nn = new NeuralNetwork();
- *     Layer l1 = new Layer(numberOfNeurons);
- *     l1.setActivationFunction(customActivationFunctionIfNeeded);
- *     nn.addLayer(l1);
- *     //Repetir para quantas layers forem necessárias
- *     ...
- *     Input input = customInput.getInput();
- *     Output output = customOutput.getOutput();
- *     Trainer trainer = new CustomTrainer(...);
- *     nn.attachInput(input);
- *     nn.attachOutput(output);
- *     nn.setTrainer(trainer);
+ * {@link #attachOutput(Output)}} e {@link #addLayer(Layer)}.</p>
+ * <div style="background: #f0f3f3; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+ *     <pre style="margin: 0; line-height: 125%">NeuralNetwork nn <span style="color: #555555">=</span> <span style="color: #006699; font-weight: bold">new</span> NeuralNetwork<span style="color: #555555">();</span>
+ *Layer l1 <span style="color: #555555">=</span> <span style="color: #006699; font-weight: bold">new</span> Layer<span style="color: #555555">(</span>numberOfNeurons<span style="color: #555555">);</span>
+ *l1<span style="color: #555555">.</span><span style="color: #330099">setActivationFunction</span><span style="color: #555555">(</span>customActivationFunctionIfNeeded<span style="color: #555555">);</span>
+ *nn<span style="color: #555555">.</span><span style="color: #330099">addLayer</span><span style="color: #555555">(</span>l1<span style="color: #555555">);</span>
+ *<span style="color: #0099FF; font-style: italic">//Repetir para quantas layers forem necessárias</span>
+ *<span style="color: #555555">...</span>
+ *Input input <span style="color: #555555">=</span> customInput<span style="color: #555555">.</span><span style="color: #330099">getInput</span><span style="color: #555555">();</span>
+ *Output output <span style="color: #555555">=</span> customOutput<span style="color: #555555">.</span><span style="color: #330099">getOutput</span><span style="color: #555555">();</span>
+ *nn<span style="color: #555555">.</span><span style="color: #330099">attachInput</span><span style="color: #555555">(</span>input<span style="color: #555555">);</span>
+ *nn<span style="color: #555555">.</span><span style="color: #330099">attachOutput</span><span style="color: #555555">(</span>output<span style="color: #555555">);</span>
+ *Trainer trainer <span style="color: #555555">=</span> <span style="color: #006699; font-weight: bold">new</span> CustomTrainer<span style="color: #555555">(nn);</span>
+ *trainer<span style="color: #555555">.</span><span style="color: #330099">startTraining</span><span style="color: #555555">();</span>
  *
- *     //Neste momento a rede está pronta para ser treinada ou usada.
- *     nn.beginTraining();
- *
- * </pre>
+ *<span style="color: #0099FF; font-style: italic">//Neste momento a rede está pronta para ser treinada ou usada.</span>
+ *nn<span style="color: #555555">.</span><span style="color: #330099">beginTraining</span><span style="color: #555555">();</span>
+ * </pre></div>
  * @see Layer
  */
 public class NeuralNetwork implements Serializable {
@@ -158,7 +158,7 @@ public class NeuralNetwork implements Serializable {
      * @param l1 camada 1
      * @param l2 camada 2
      */
-    protected void connect(Layer l1, Layer l2) {
+    private void connect(Layer l1, Layer l2) {
         for (int i = 0; i < l1.getNeuronsCount(); i++) {
             for (int j = 0; j < l2.getNeuronsCount(); j++) {
                 l1.getNeurons().get(i).addOutputConnection(l2.getNeurons().get(j));
@@ -195,8 +195,13 @@ public class NeuralNetwork implements Serializable {
     public void attachInput(Input input) throws Exception {
         if (this.input == null) {
             this.input = input;
-            connect(input.getLayer(), layers.get(0));
-            layers.add(0, input.getLayer());
+            if(layers.size() == 0)
+                layers.add(input.getLayer());
+            else {
+                connect(input.getLayer(), layers.get(0));
+                layers.add(0, input.getLayer());
+            }
+
         } else {
             throw new Exception("Ops! Já temos a camada input na rede");
         }
@@ -295,5 +300,12 @@ public class NeuralNetwork implements Serializable {
     public void setLabel(String label) {
         this.label = label;
     }
+
+    /**
+     * Acesso ao input da Rede Neural.
+     * @return Retorna o Input da Rede Neuroal ou null caso não o possua ainda.
+     */
+    public Input getInput() {return input;}
+
 
 }
