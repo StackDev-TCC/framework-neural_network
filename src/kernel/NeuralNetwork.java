@@ -303,9 +303,17 @@ public class NeuralNetwork implements Serializable {
 
     /**
      * Acesso ao input da Rede Neural.
-     * @return Retorna o Input da Rede Neuroal ou null caso não o possua ainda.
+     * @return Retorna o Input da Rede Neural ou null caso não o possua ainda.
      */
     public Input getInput() {return input;}
+
+    /**
+     * Acesso ao Output da Rede Neural.
+     * @return Retorna o Output da Rede Neural ou null caso não o possua ainda.
+     */
+    public Output getOutput() {
+        return output;
+    }
 
 
 }
