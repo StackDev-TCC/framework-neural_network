@@ -20,13 +20,14 @@ import java.util.ArrayList;
 public class Topology {
     int w, h;
     static NeuralNetwork nn;
-    static ArrayList<Node> nodes;
-    static ArrayList<Line> lines;
+    static ArrayList<Line> staticLines;
+    static ArrayList<Node> staticNodes;
+    static int margin = 50;
 
     public static void createTopology(NeuralNetwork nn, int width, int height) throws Exception {
         Topology.nn = nn;
-        nodes = new ArrayList<Node>();
-        lines = new ArrayList<Line>();
+        staticLines = new ArrayList<>();
+        staticNodes = new ArrayList<>();
         if (nn.checkIntegrity())
             renderTopology(width, height);
         else
@@ -38,61 +39,63 @@ public class Topology {
     }
 
     private static void renderTopology(int width, int height) {
+        //Construindo a disposição dos elementos
         allocateElements(width, height);
+        //Desenhando e salvando imagem output
         draw(width, height);
     }
 
     private static void allocateElements(int width, int height) {
 
-        // Inserindo as duas camadas de Input (data e layer)
+        // Inserindo as camadas com Neurônios
 
-        int xOffset, yOffset;
-        Input input = nn.getInput();
-        int qtdOfLayers = nn.getLayers().size() + 2;
-        int qtdInput = input.getValues().size();
-        int diameter = Math.min(height / qtdInput - 2, 100);
-        float spacer = (height - (qtdInput * diameter)) / (float) (qtdInput + 1);
+        ArrayList<NLayer> layers = new ArrayList<>();
+        int xOffset = margin;
+        for(int i = 0; i < nn.getLayersCount(); i++){
+            int qtd = nn.getLayers().get(i).getNeuronsCount();
+            int diameter = Math.min((height-2*margin)/qtd,100);
+            float spacer = ((height-2*margin) - (qtd * diameter)) / (float) (qtd + 1);
 
-        xOffset = diameter / 2;
-        yOffset = Math.round(spacer + diameter / 2.0f);
-        for (double d : input.getValues()) {
-            Node n = new Node(Color.CYAN, xOffset, yOffset, diameter,d);
-
-            nodes.add(n);
-            yOffset += spacer + diameter;
-        }
-
-        //Inserindo as camadas intermediárias
-
-        yOffset = diameter / 2;
-        xOffset += width / qtdOfLayers;
-        for (Layer l : nn.getLayers()) {
-            diameter = Math.min(100, height / l.getNeuronsCount()) - 2;
-            for (Neuron n : l.getNeurons()) {
-                Node node = new Node(Color.orange, xOffset, yOffset, diameter,n.getValue());
-                nodes.add(node);
-                yOffset += diameter + 2;
+            //Inserindo os neurônios para cada camada
+            ArrayList<Node> nodes = new ArrayList<>();
+            int yOffset = margin;
+            for(int node = 0; node < qtd; node++){
+                double v = nn.getLayers().get(i).getNeurons().get(node).getValue();
+                Node n = new Node(Color.BLUE, xOffset, yOffset, diameter, v);
+                nodes.add(n);
+                staticNodes.add(n);
+                yOffset+=spacer;
             }
-            xOffset += width / qtdOfLayers;
-            yOffset = diameter / 2;
+            NLayer l = new NLayer(xOffset+diameter/2, spacer, diameter, nodes);
+            layers.add(l);
+            xOffset += (width-2*margin)/nn.getLayersCount();
         }
 
-        //Inserindo Output
-        draw(width, height);
+        //Adicionando as linhas de conexões entre uma camada e outra
+        NLayer prev = layers.get(0);
+        for(int i = 1; i < layers.size(); i++){
+            NLayer next = layers.get(i);
+            for(Node from : prev.nodes()){
+                for(Node to : next.nodes()) {
+                    Line l = new Line(Color.BLACK, from, to);
+                    staticLines.add(l);
+                }
+            }
+            prev = next;
+        }
     }
 
     private static void draw(int w, int h) {
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D render = (Graphics2D) img.getGraphics();
+        render.setBackground(Color.white);
+        render.clearRect(0,0,w,h);
 
-        render.setColor(Color.white);
-        render.fillRect(0,0,w,h);
-
-        for (Node n : nodes) {
+        for (Node n : staticNodes) {
             render.setColor(n.c());
             render.fillOval(n.x(), n.y(), n.diameter(), n.diameter());
         }
-        for (Line l : lines) {
+        for (Line l : staticLines) {
             render.setColor(l.c());
             render.drawLine(l.a().x, l.a().y, l.b().x, l.b().y);
         }
@@ -104,12 +107,13 @@ public class Topology {
     }
 }
 
-record Node(Color c, int x, int y, int diameter, double value){
-}
+record Node(Color c, int x, int y, int diameter, double value){}
 
-record Line(Color c, Point a, Point b, double w) {
-    public Line(Color c, Node fromNode, Node toNode, double w) {
+record Line(Color c, Point a, Point b) {
+    public Line(Color c, Node fromNode, Node toNode) {
         this(c, new Point(fromNode.x()+fromNode.diameter()/2, fromNode.y()),
-             new Point(toNode.x()-toNode.diameter()/2,toNode.y()),w);
+                new Point(toNode.x()-toNode.diameter()/2,toNode.y()));
     }
 }
+
+record NLayer(int x, float vSpacer, int diameter, ArrayList<Node> nodes){}
