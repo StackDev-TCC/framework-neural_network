@@ -12,13 +12,13 @@ public class Main {
 
 //        PlotGraphics pg = new PlotGraphics();
 //
-//        NeuralNetwork nn = new NeuralNetwork();
-//        Layer l1 = new Layer(10);
-//        Layer l2 = new Layer(10);
-//        l1.setActivationFunction(new Sigmoid());
-//        l2.setActivationFunction(new Step());
-//        nn.addLayer(l1);
-//        nn.addLayer(l2);
+        NeuralNetwork nn = new NeuralNetwork();
+        Layer l1 = new Layer(10);
+        Layer l2 = new Layer(10);
+        l1.setActivationFunction(new Sigmoid());
+        l2.setActivationFunction(new Step());
+        nn.addLayer(l1);
+        nn.addLayer(l2);
 //        Mnist mnist = new Mnist();
 //        MNISTInputSamples mnistInputSamples = new MNISTInputSamples(mnist.getAllMnistData());
 //        mnistInputSamples.getSample(0);

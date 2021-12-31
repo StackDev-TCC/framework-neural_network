@@ -103,13 +103,13 @@ public class NeuralNetwork implements Serializable {
      * @return verdadeiro se o função ocorrer
      */
     public boolean addLayer(int index, Layer layer) {
-        if (layer.getNeuronsCount() == 0 || index == 0) {
-//            System.out.println("Camada está sem neurônios ou o indíce está na posição zero");
+        if (layer.getNeuronsCount() == 0) {
+//            System.out.println("Camada está sem neurônios");
             return false;
         } else {
             if (index == layers.size() - 1)
                 connect(layers.get(index - 1), layer);
-//            layers.add(index, layer);
+                layers.add(index, layer);
             if (index < layers.size() - 1) {
                 layers.get(index - 1).clearAllConnections();
                 connect(layers.get(index - 1), layer);

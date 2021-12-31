@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * {@link #createTopology(NeuralNetwork, int, int)} uma forma de renderizar a topologia atual da
  * instância da {@link NeuralNetwork}</p>
  *
- * <p style="color:red">Só funciona à partir da versão 14 do Java, pois faz uso de classes {@code Records}.</p>
+ * <p style="color:red">Só funciona à partir da versão 16 do Java, pois faz uso de classes {@code Records}.</p>
  */
 public class Topology {
     int w, h;
