@@ -64,7 +64,7 @@ public class Topology {
                 Node n = new Node(Color.BLUE, xOffset, yOffset, diameter, v);
                 nodes.add(n);
                 staticNodes.add(n);
-                yOffset+=spacer;
+                yOffset+=spacer+diameter;
             }
             NLayer l = new NLayer(xOffset+diameter/2, spacer, diameter, nodes);
             layers.add(l);
@@ -88,12 +88,13 @@ public class Topology {
     private static void draw(int w, int h) {
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D render = (Graphics2D) img.getGraphics();
+        render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         render.setBackground(Color.white);
         render.clearRect(0,0,w,h);
 
         for (Node n : staticNodes) {
             render.setColor(n.c());
-            render.fillOval(n.x(), n.y(), n.diameter(), n.diameter());
+            render.fillOval(n.x()-n.diameter()/2, n.y()-n.diameter()/2, n.diameter(), n.diameter());
         }
         for (Line l : staticLines) {
             render.setColor(l.c());
