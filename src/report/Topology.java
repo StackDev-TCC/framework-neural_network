@@ -95,6 +95,11 @@ public class Topology {
         for (Node n : staticNodes) {
             render.setColor(n.c());
             render.fillOval(n.x()-n.diameter()/2, n.y()-n.diameter()/2, n.diameter(), n.diameter());
+            render.setColor(Color.white);
+            String v = n.value()+"";
+            int fw = render.getFontMetrics().stringWidth(v);
+            int fh = render.getFontMetrics().getHeight();
+            render.drawString(n.value()+"",n.x()-fw/2,n.y()+fh/2);
         }
         for (Line l : staticLines) {
             render.setColor(l.c());
