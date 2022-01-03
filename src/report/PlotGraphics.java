@@ -35,10 +35,71 @@ public class PlotGraphics {
     private String title;
     private float margin;
 
+    /**
+     * Construtor de {@code PlotGraphics} com todos os parâmetros necessários para a plotagem de um gráfico.
+     * <p>Uma atenção especial ao parâmetro {@code margin}, pois este será usado como uma escala de porcentagem
+     * da imagem (de 0 a 100%) para o cálculo da margem de plotagem. Uma margin de 100 plota o gráfico utilizando
+     * toda a área da imagem, sem bordas. Valores menores vão criar bordas maiores. O ideal para a maioria dos casos são
+     * valores acima de 85%</p>
+     *
+     * @param w A largura da Imagem geradora do gráfico.
+     * @param h A altura da Imagem geradora do gráfico.
+     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico.
+     * @param xLabel O rótulo do eixo X.
+     * @param yLabel O rótulo do eixo Y.
+     * @param title O titulo do gráfico.
+     * @param data O {@code Array} de elementos a serem plotados.
+     */
+    public PlotGraphics(int w, int h, float margin, String xLabel, String yLabel, String title, double[] data){
+        this.w = w;
+        this.h = h;
+        this.margin = margin;
+        this.xLabel = xLabel;
+        this.yLabel = yLabel;
+        this.title = title;
+        this.data = data;
+        startImage();
+        this.u = generateU();
+    }
+
+    /**
+     * Construtor de {@code PlotGraphics} com os parâmetros iniciais para a criação do objeto
+     * antes de se ter calculado os dados para serem plotados
+     * @param w A largura da Imagem geradora do gráfico.
+     * @param h A altura da Imagem geradora do gráfico.
+     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico
+     * @param xLabel O rótulo do eixo X.
+     * @param yLabel O rótulo do eixo Y.
+     * @param title O titulo do gráfico.
+     */
+    public PlotGraphics(int w, int h, float margin, String xLabel, String yLabel, String title){
+        this.w = w;
+        this.h = h;
+        this.margin = margin;
+        this.xLabel = xLabel;
+        this.yLabel = yLabel;
+        this.title = title;
+        startImage();
+    }
+
+    /**
+     * Construtor de {@code PlotGraphics} com largura e altura. Calcula o {@link Universe} quando receber
+     * o parâmetro {@code data} sem {@code Labels} nem {@code Title}.
+     * @param w A largura da Imagem geradora do gráfico.
+     * @param h A altura da Imagem geradora do gráfico.
+     */
+    public PlotGraphics(int w, int h){
+        this.w = w;
+        this.h = h;
+        startImage();
+    }
+
     public static void main(String[] args){
-        double[] data = new double[]{400, 401, 398, 396, 394, 380, 370, 340, 345, 340, 320, 305, 250, 140, 100, 98, 95,
-                94, 92, 90, 89, 86, 84, 81, 70, 59, 57, 55, 55, 53, 51, 50, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
-                27, 26, 25, 24, 23, 22, 21, 20, 18, 16, 14, 10, 9, 8, 7,6, 5, 4, 3, 2, 1, 0, 0, 0, 0};
+        double[] data = new double[]{800, 805, 783, 792, 781, 777, 779, 756, 751, 769, 743, 749, 742, 736, 733,
+                728, 725, 724, 723, 711, 717, 719, 715, 698, 694, 693, 697, 685, 677, 662, 661, 654, 631, 610,
+                605, 601, 597, 588, 564, 531, 537, 521, 490, 489, 478, 468, 463, 461, 445, 443, 441, 437, 431,
+                420, 418, 415, 407 ,400, 401, 398, 396, 394, 380, 370, 340, 345, 340, 320, 305, 250, 140, 100, 98, 95,
+                94, 93, 92, 91, 90, 89,88, 88, 87, 87, 86, 85, 85, 84, 83, 83, 82, 82, 81, 80,80,80, 79, 79, 78 };
         PlotGraphics pg = new PlotGraphics(800,600,90,"eixoX", "eixoY","Gráfico", data);
         pg.plot();
         JFrame f = new JFrame("Graphic");
@@ -102,7 +163,7 @@ public class PlotGraphics {
         render.setStroke(bs);
 
         int tamH = h-border*2;
-        int incH = tamH/20;
+        int incH = tamH/10;
 
         int tamW = w-border*2;
         int incW = tamW/10;
@@ -112,7 +173,7 @@ public class PlotGraphics {
         double x = u.xini;
 
         double sizey = u.yend - u.yini;
-        double incy = sizey/20.0;
+        double incy = sizey/10.0;
         double y = u.yend;
 
         for(int j = 0; j <= tamH; j+=incH, y-=incy){
@@ -132,9 +193,9 @@ public class PlotGraphics {
 
             render.setColor(Color.BLACK);
             FontMetrics metrics = render.getFontMetrics();
-            xLabel = Math.round(x) + "";
+            xLabel = Math.round(x + 1) + "";
             int labelWidthx = metrics.stringWidth(xLabel);
-            render.drawString(xLabel, border + i - labelWidthx/2, h - border + 20);
+            render.drawString(xLabel , border + i - labelWidthx/2, h - border + 20);
         }
         //retorna a linha para o estilo continuo
         render.setStroke(oldStroke);
@@ -154,7 +215,8 @@ public class PlotGraphics {
 
     private void plotData(int border, Graphics2D render){
 
-        int bulletDiameter = Math.round(Math.min(w , h) * 0.01f);
+        int bulletDiameter = (int) Math.min(Math.min(w, h) * 0.01f, Math.min(w, h)/ data.length);
+
         int prevX = u.mapX(0);
         int prevY = u.mapY(data[0]);
 
@@ -185,71 +247,29 @@ public class PlotGraphics {
             double xmax = data.length-1;
             double ymin = getMinValue();
             double ymax = getMaxValue();
-            double tmp = ymax-ymin;
-            ymax+= tmp * 0.1;
-            ymin-= tmp * 0;
+
+
+            if(ymin != 0){
+                double relacao = (ymax-ymin) / ymin;
+                if(relacao < 1.0){
+                    int resultado = (int) Math.floor(Math.log10(ymin));
+                    int incremento = (int) Math.pow(10, resultado);
+                    int resFinal = (int) ((ymin - incremento) + (ymin % incremento));
+                    ymin = resFinal;
+                }else{
+                    ymin = 0;
+                }
+            }
+
+            int resultado = (int) Math.floor(Math.log10(ymax));
+            int incremento = (int) Math.pow(10, resultado);
+            int resFinal = (int) ((ymax + incremento) - (ymax % incremento));
+            ymax = resFinal;
+
+
             return new Universe(xmin, xmax, ymin, ymax, this);
         }
         return null;
-    }
-
-    /**
-     * Construtor de {@code PlotGraphics} com todos os parâmetros necessários para a plotagem de um gráfico.
-     * <p>Uma atenção especial ao parâmetro {@code margin}, pois este será usado como uma escala de porcentagem
-     * da imagem (de 0 a 100%) para o cálculo da margem de plotagem. Uma margin de 100 plota o gráfico utilizando
-     * toda a área da imagem, sem bordas. Valores menores vão criar bordas maiores. O ideal para a maioria dos casos são
-     * valores acima de 85%</p>
-     *
-     * @param w A largura da Imagem geradora do gráfico.
-     * @param h A altura da Imagem geradora do gráfico.
-     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico.
-     * @param xLabel O rótulo do eixo X.
-     * @param yLabel O rótulo do eixo Y.
-     * @param title O titulo do gráfico.
-     * @param data O {@code Array} de elementos a serem plotados.
-     */
-    public PlotGraphics(int w, int h, float margin, String xLabel, String yLabel, String title, double[] data){
-        this.w = w;
-        this.h = h;
-        this.margin = margin;
-        this.xLabel = xLabel;
-        this.yLabel = yLabel;
-        this.title = title;
-        this.data = data;
-        startImage();
-        this.u = generateU();
-    }
-
-    /**
-     * Construtor de {@code PlotGraphics} com os parâmetros iniciais para a criação do objeto
-     * antes de se ter calculado os dados para serem plotados
-     * @param w A largura da Imagem geradora do gráfico.
-     * @param h A altura da Imagem geradora do gráfico.
-     * @param margin A porcentagem da imagem (de 0 a 100) que estará dentro da margem para plotar o gráfico
-     * @param xLabel O rótulo do eixo X.
-     * @param yLabel O rótulo do eixo Y.
-     * @param title O titulo do gráfico.
-     */
-    public PlotGraphics(int w, int h, float margin, String xLabel, String yLabel, String title){
-        this.w = w;
-        this.h = h;
-        this.margin = margin;
-        this.xLabel = xLabel;
-        this.yLabel = yLabel;
-        this.title = title;
-        startImage();
-    }
-
-    /**
-     * Construtor de {@code PlotGraphics} com largura e altura. Calcula o {@link Universe} quando receber
-     * o parâmetro {@code data} sem {@code Labels} nem {@code Title}.
-     * @param w A largura da Imagem geradora do gráfico.
-     * @param h A altura da Imagem geradora do gráfico.
-     */
-    public PlotGraphics(int w, int h){
-        this.w = w;
-        this.h = h;
-        startImage();
     }
 
     /**
