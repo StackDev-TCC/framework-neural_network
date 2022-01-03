@@ -58,7 +58,7 @@ public class Topology {
 
             //Inserindo os neurônios para cada camada
             ArrayList<Node> nodes = new ArrayList<>();
-            int yOffset = margin;
+            int yOffset = Math.round(margin+spacer);
             for(int node = 0; node < qtd; node++){
                 double v = nn.getLayers().get(i).getNeurons().get(node).getValue();
                 Node n = new Node(Color.BLUE, xOffset, yOffset, diameter, v);

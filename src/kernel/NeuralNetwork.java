@@ -108,8 +108,9 @@ public class NeuralNetwork implements Serializable {
             return false;
         } else {
             if (index == layers.size() - 1)
-                connect(layers.get(index - 1), layer);
                 layers.add(index, layer);
+                connect(layers.get(index - 1), layer);
+
             if (index < layers.size() - 1) {
                 layers.get(index - 1).clearAllConnections();
                 connect(layers.get(index - 1), layer);
