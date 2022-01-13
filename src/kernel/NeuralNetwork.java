@@ -1,7 +1,5 @@
 package kernel;
 
-import operations.TrainingNetwork;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +31,7 @@ import java.util.List;
  *nn<span style="color: #555555">.</span><span style="color: #330099">beginTraining</span><span style="color: #555555">();</span>
  * </pre></div>
  * @see Layer
+ * @author Prof. Luís Emílio C. D. Valle e Maurício Y. Nakandakari
  */
 public class NeuralNetwork implements Serializable {
 
@@ -40,11 +39,6 @@ public class NeuralNetwork implements Serializable {
      * Coleção de camadas
      */
     protected ArrayList<Layer> layers;
-
-    /**
-     * Coleção de amostras
-     */
-    protected ArrayList<ArrayList<Double>> samples;
 
     /**
      * Rótulo
@@ -87,38 +81,85 @@ public class NeuralNetwork implements Serializable {
      *
      * @param layer camada adicionada
      */
-    public void addLayer(Layer layer) {
-        if (layers.size() == 0) {
+    public void addLayer(Layer layer) throws IllegalArgumentException{
+        /*
+        *******************************************************************
+        **********  Condições para o addLayer(Layer layer) ****************
+        *******************************************************************
+        layer (Argumento do método)     Exceções
+        ------------------------------------------------------------------------------
+        layer == null       		 -> Argumento inválido (só permitir inserção de layers instanciadas e com neurônios
+        neuronCount == 0             -> Argumento inválido (Só permitir inserção de layers instanciadas e com neurônios
+        *São separadas porque não existe neuronCount() se layer for null (incorreria em NullPointerException)
+        Layers (Attr da Classe)     	Ações
+        --------------------------------------------------------------------------------------------------------------
+        Vazia                        -> Inserir a nova layer   (1)
+        Apenas input                 -> Inserir a nova layer mais à direita e conectar o input à nova layer    (2)
+        layers sem input e output    -> Inserir a nova layer mais à direita e conectar a anterior à nova layer (2)
+        Input + layers               -> Inserir a nova layer mais à direita e conectar a anterior à nova layer (2)
+        Apenas output                -> inserir a nova layer antes do output e conectar a nova layer ao output (3)
+        Input + output sem layer     -> Inserir a nova layer antes de output, desconectar a anterior de output, conectar a anterior à nova layer e conectar a nova layer ao output
+        Layers + output              -> Inserir a nova layer antes do output, desconectar a anterior do output, conectar a anterior à nova layer e conectar a nova layer ao output (4)
+        Input + layers + output      -> Inserir a nova layer antes do output, desconectar a anterior do output, conectar a anterior à nova layer e conectar a nova layer ao output (4)
+        */
+
+        //Layer (Argumento do método) é nula ou possui 0 neurônios?
+        //Layer == null precisa ser a primeira expressão a ser verificada, caso contrário será lançada NullPointerException
+        if(layer == null || layer.getNeuronsCount()==0)
+            throw new IllegalArgumentException("The layer must not be null or must contain at least 1 Neuron");
+        //Layers (Atributo da classe) está vazia?
+        if(layers.isEmpty())
             layers.add(layer);
-        } else {
-            addLayer(layers.size() - 1, layer);
+        else{
+            if(output != null){
+                if(layers.size()==1){
+                    layers.add(0,layer);
+                    connect(layers.get(0),layers.get(1));
+                }else{
+                    Layer output = layers.get(layers.size()-1);
+                    Layer last = layers.get(layers.size()-2);
+                    disconnect(last);
+                    layers.add(layers.size()-1, layer);
+                    connect(last, layer);
+                    connect(layer, output);
+                }
+            }else{
+                Layer last = layers.get(layers.size()-1);
+                layers.add(layer);
+                connect(last, layer);
+            }
         }
     }
 
     /**
-     * Adiciona camada em um indice especifico
+     * Adiciona {@link Layer} em um indice especifico
+     * <p>Se a {@code NeuralNetwork} estiver um input e/ou output acoplados, é impossível adicionar a nova camada
+     * na posição 0 e {@code qtdLayers-1} respectivamente, sendo lançada uma {@link IllegalArgumentException}</p>
      *
      * @param index indice
      * @param layer camada adicionada
-     * @return verdadeiro se o função ocorrer
+     *
      */
-    public boolean addLayer(int index, Layer layer) {
-        if (layer.getNeuronsCount() == 0) {
-//            System.out.println("Camada está sem neurônios");
-            return false;
-        } else {
-            if (index == layers.size() - 1)
-                layers.add(index, layer);
-                connect(layers.get(index - 1), layer);
+    public void addLayer(int index, Layer layer) {
+        if(index < 0 || index >= layers.size())
+            throw new IllegalArgumentException("Index does not corresponds to a valid layer position");
+        if(layer == null)
+            throw new IllegalArgumentException("Layer must not be null");
+        if(layer.getNeuronsCount()==0)
+            throw new IllegalArgumentException("Layer must contains at least 1 Neuron!");
+        if(input != null && index == 0)
+            throw new IllegalArgumentException("Impossible to insert on input layer position!");
+        if(output != null && index == layers.size()-1)
+            throw new IllegalArgumentException("Impossible to insert on output layer position");
 
-            if (index < layers.size() - 1) {
-                layers.get(index - 1).clearAllConnections();
-                connect(layers.get(index - 1), layer);
-                connect(layer, layers.get(index + 1));
-            }
+        layers.add(index,layer);
+        if(index > 0){
+            Layer prev = layers.get(index-1);
+            disconnect(prev);
+            connect(prev, layer);
+            if(layers.size()>index)
+                connect(layer, layers.get(index+1));
         }
-        layers.add(index, layer);
-        return true;
     }
 
     /**
@@ -126,36 +167,44 @@ public class NeuralNetwork implements Serializable {
      *
      * @param layer camada removida
      */
-    public void removeLayer(Layer layer) {
-        layers.remove(layer);
+    public void removeLayer(Layer layer) throws IllegalArgumentException{
+        removeLayer(layers.indexOf(layer));
     }
 
     /**
-     * Remove camada no indice especifico
-     *
-     * @param index indice
-     * @return verdadeiro se a função ocorrer
+     * Remove uma camada no indice especificado.
+     *<p>Caso o índice esteja fora dos limites, ou represente as camadas reservadas de input ou output,
+     * uma {@code IllegalArgumentException} será lançada.</p>
+     * <p>Caso a layer removida esteja entre outras duas layers, a anterior é reconectada à próxima layer.</p>
+     * @param index indice da camada que se deseja remover
+     * @return Retorna a {@link Layer} removida e desconectada
      */
-    public boolean removeLayerAt(int index) {
-        //Todo verificar quando tiver input
-        //Todo verificar quando tiver output
-        //Todo verificar quando tiver apenas uma layer
-        if (layers.get(index).equals(null))
-            return false;
-        if (index == 0 || index == layers.size() - 1)
-            return false;
-        Layer l1 = layers.get(index - 1);
-        Layer l2 = layers.get(index + 1);
-        l1.clearAllConnections();
-        connect(l1, l2);
-        layers.get(index).removeAllNeurons();
-        layers.remove(index);
-        return true;
+    public Layer removeLayer(int index) throws IllegalArgumentException{
+        Layer result;
+        if(layers.isEmpty())
+            throw new IllegalArgumentException("This NeuralNetwork has no layers to remove");
+        if(index < 0 || index >= layers.size())
+            throw new IllegalArgumentException("Index does not corresponds to a valid layer position");
+        if(input != null && index == 0)
+            throw new IllegalArgumentException("Impossible to exclude input layer without exclude input itself. Use detachInput() instead!");
+        if(output != null && index == layers.size()-1)
+            throw new IllegalArgumentException("Impossible to exclude output layer without exclude output itself. Use detatchOutput() instead");
+
+        disconnect(layers.get(index));
+        result = layers.remove(index);
+        if(index > 0) {
+            Layer before = layers.get(index - 1);
+            disconnect(before);
+            if (layers.size() > index)
+                connect(before, layers.get(index));
+        }
+        return result;
     }
 
     /**
-     * Conetar duas camadas
-     *
+     * Conecta os {@link Neuron Neurônios} da {@link Layer camada} {@code l1} aos neurônios de {@code l2}
+     *<p>Este método conecta cada neurônio de l1 a todos os neurônios de l2. Se outras conexões forem necessárias,
+     * é recomendável customizar este comportamento em uma subclasse de {@code NeuralNetwork}</p>
      * @param l1 camada 1
      * @param l2 camada 2
      */
@@ -166,6 +215,14 @@ public class NeuralNetwork implements Serializable {
             }
         }
         this.randomizeWeight();
+    }
+
+    /**
+     * Elimina as conexões dos neurônios de uma determinada {@link Layer}.
+     * @param l A {@link Layer} a ter seus neurônios desconectados.
+     */
+    private void disconnect(Layer l){
+        l.clearAllConnections();
     }
 
     /**
@@ -191,36 +248,66 @@ public class NeuralNetwork implements Serializable {
      * Recebe a camada de entrada
      *
      * @param input Camada de entrada
-     * @throws Exception já existe camada de entrada
+     * @throws IllegalStateException já existe camada de entrada
      */
-    public void attachInput(Input input) throws Exception {
+    public void attachInput(Input input) throws IllegalStateException {
         if (this.input == null) {
             this.input = input;
-            if(layers.size() == 0)
-                layers.add(input.getLayer());
-            else {
+            layers.add(0, input.getLayer());
+            if(layers.size() > 1)
                 connect(input.getLayer(), layers.get(0));
-                layers.add(0, input.getLayer());
-            }
-
         } else {
-            throw new Exception("Ops! Já temos a camada input na rede");
+            throw new IllegalStateException("This network already has an configured input attached");
         }
     }
 
+    public Input detachInput(){
+        Input result;
+        if(input == null)
+            throw new IllegalStateException(("This network has no input to detach!"));
+        else{
+            result = input;
+            disconnect(layers.get(0));
+            layers.remove(0);
+            input = null;
+        }
+        return result;
+    }
+
     /**
-     * Recebe a camada de saída
+     * Acopla um output à rede
      *
-     * @param output Camada de saída
-     * @throws Exception já existe camada de saída
+     * <p>Da mesma forma que {@code input}, só é permitida a insersção de um único
+     * output. Caso já exista um inserido, uma {@code IllegalStateException} será lançada </p>
+     *
+     * @param output Camada de saída da rede
+     * @throws IllegalStateException caso a {@code NeuralNetwork} já contenha uma {@link Layer camada} de saída,
      */
-    public void attachOutput(Output output) throws Exception {
+    public void attachOutput(Output output) throws IllegalStateException {
+
         if (this.output == null) {
             this.output = output;
+            if(layers.size()>0){
+                connect(layers.get(layers.size()-1), output.getLayer());
+            }
             addLayer(layers.size(), output.getLayer());
         } else {
-            throw new Exception("Ops! Já temos a camada input na rede");
+            throw new IllegalStateException("This network already has an configured output attached!");
         }
+    }
+
+    public Output detachOutput(){
+        Output result;
+        if(this.output == null){
+            throw new IllegalStateException("This network has no output to detach!");
+        }
+        else{
+            result = this.output;
+            layers.remove(layers.size()-1);
+            disconnect(layers.get(layers.size()-1));
+            this.output = null;
+        }
+        return result;
     }
 
     /**
@@ -229,7 +316,7 @@ public class NeuralNetwork implements Serializable {
      * @param verbose verdadeiro se a informção for mais detalhada e falso se não
      * @return informações da arquitetura
      */
-    public String showInfo(boolean verbose) {
+    public String getInfo(boolean verbose) {
         StringBuilder info = new StringBuilder();
         info.append("Neural Network Info: \n");
         info.append("Layers: " + layers.size() + "\n");
