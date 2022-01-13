@@ -103,6 +103,8 @@ public class Topology {
         for (Node n : staticNodes) {
             render.setColor(n.c());
             render.fillOval(n.x()-n.diameter()/2, n.y()-n.diameter()/2, n.diameter(), n.diameter());
+            render.setColor(n.c().darker());
+            render.drawOval(n.x()-n.diameter()/2,n.y()-n.diameter()/2, n.diameter(),n.diameter());
             render.setColor(Color.white);
             String v = n.value()+"";
             int fw = render.getFontMetrics().stringWidth(v);
