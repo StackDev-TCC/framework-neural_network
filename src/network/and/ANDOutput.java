@@ -15,7 +15,7 @@ public class ANDOutput extends Output {
      * Definir output
      */
     @Override
-    public void defineOuput() {
+    public void defineOutput() {
 
     }
 }

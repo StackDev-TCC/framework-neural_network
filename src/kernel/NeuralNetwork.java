@@ -252,10 +252,8 @@ public class NeuralNetwork implements Serializable {
      */
     public void attachInput(Input input) throws IllegalStateException {
         if (this.input == null) {
+            addLayer(0, input.getLayer());
             this.input = input;
-            layers.add(0, input.getLayer());
-            if(layers.size() > 1)
-                connect(input.getLayer(), layers.get(0));
         } else {
             throw new IllegalStateException("This network already has an configured input attached");
         }
@@ -265,12 +263,10 @@ public class NeuralNetwork implements Serializable {
         Input result;
         if(input == null)
             throw new IllegalStateException(("This network has no input to detach!"));
-        else{
-            result = input;
-            disconnect(layers.get(0));
-            layers.remove(0);
-            input = null;
-        }
+
+        result = input;
+        input = null;
+        removeLayer(0);
         return result;
     }
 
@@ -286,11 +282,8 @@ public class NeuralNetwork implements Serializable {
     public void attachOutput(Output output) throws IllegalStateException {
 
         if (this.output == null) {
+            addLayer(output.getLayer());
             this.output = output;
-            if(layers.size()>0){
-                connect(layers.get(layers.size()-1), output.getLayer());
-            }
-            addLayer(layers.size(), output.getLayer());
         } else {
             throw new IllegalStateException("This network already has an configured output attached!");
         }
@@ -301,12 +294,9 @@ public class NeuralNetwork implements Serializable {
         if(this.output == null){
             throw new IllegalStateException("This network has no output to detach!");
         }
-        else{
-            result = this.output;
-            layers.remove(layers.size()-1);
-            disconnect(layers.get(layers.size()-1));
-            this.output = null;
-        }
+        result = this.output;
+        output = null;
+        removeLayer(layers.size()-1);
         return result;
     }
 

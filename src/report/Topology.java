@@ -51,17 +51,23 @@ public class Topology {
 
         ArrayList<NLayer> layers = new ArrayList<>();
         int xOffset = margin;
+        Color c;
         for(int i = 0; i < nn.getLayersCount(); i++){
             int qtd = nn.getLayers().get(i).getNeuronsCount();
             int diameter = Math.min((height-2*margin)/qtd,100);
             float spacer = ((height-2*margin) - (qtd * diameter)) / (float) (qtd + 1);
-
+            if(i==0 && nn.getInput()!=null)
+                c = Color.blue;
+            else if(i == nn.getLayersCount()-1 && nn.getOutput()!=null)
+                c = Color.green;
+            else
+                c = Color.orange;
             //Inserindo os neurônios para cada camada
             ArrayList<Node> nodes = new ArrayList<>();
             int yOffset = Math.round(margin+spacer);
             for(int node = 0; node < qtd; node++){
-                double v = nn.getLayers().get(i).getNeurons().get(node).getValue();
-                Node n = new Node(Color.BLUE, xOffset, yOffset, diameter, v);
+                double v = nn.getLayers().get(i).getNeurons().get(node).getOutput();
+                Node n = new Node(c, xOffset, yOffset, diameter, v);
                 nodes.add(n);
                 staticNodes.add(n);
                 yOffset+=spacer+diameter;
@@ -72,16 +78,18 @@ public class Topology {
         }
 
         //Adicionando as linhas de conexões entre uma camada e outra
-        NLayer prev = layers.get(0);
-        for(int i = 1; i < layers.size(); i++){
-            NLayer next = layers.get(i);
-            for(Node from : prev.nodes()){
-                for(Node to : next.nodes()) {
-                    Line l = new Line(Color.BLACK, from, to);
-                    staticLines.add(l);
+        if(layers.size()>0) {
+            NLayer prev = layers.get(0);
+            for (int i = 1; i < layers.size(); i++) {
+                NLayer next = layers.get(i);
+                for (Node from : prev.nodes()) {
+                    for (Node to : next.nodes()) {
+                        Line l = new Line(Color.BLACK, from, to);
+                        staticLines.add(l);
+                    }
                 }
+                prev = next;
             }
-            prev = next;
         }
     }
 

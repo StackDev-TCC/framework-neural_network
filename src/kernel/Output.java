@@ -33,6 +33,7 @@ public abstract class Output {
      */
     public Output(int size) {
         this.outputLayer = new Layer(size);
+        defineOutput();
     }
 
     /**
@@ -42,6 +43,7 @@ public abstract class Output {
      */
     public Output(Layer outputLayer) {
         this.outputLayer = outputLayer;
+        defineOutput();
     }
 
     /**
@@ -56,7 +58,7 @@ public abstract class Output {
     /**
      * definir output
      */
-    public abstract void defineOuput();
+    public abstract void defineOutput();
 
     /**
      * Obter o valor esperado

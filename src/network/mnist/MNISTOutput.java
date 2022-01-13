@@ -18,7 +18,7 @@ public class MNISTOutput extends Output {
      * Definir output
      */
     @Override
-    public void defineOuput() {
+    public void defineOutput() {
         for (int i = 0; i < 10; i++)
             outputs.add(Integer.valueOf(i));
     }
